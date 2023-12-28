@@ -1,11 +1,10 @@
 from jbi100_app.main import app
 from jbi100_app.views.menu import make_menu_layout
-from jbi100_app.views.pitch_and_stats import BestPlayersPitch
+from jbi100_app.views.pitch_and_stats import BestPlayersPitch, make_filter_boxes
 from jbi100_app.views.scatterplot import Scatterplot
 
-from dash import html
+from dash import html, Input, Output
 import plotly.express as px
-from dash.dependencies import Input, Output
 
 
 if __name__ == '__main__':
@@ -20,34 +19,70 @@ if __name__ == '__main__':
     app.layout = html.Div(
         id="app-container",
         children=[
-            # Left column
             html.Div(
-                id="left-column",
-                className="three columns",
-                children=make_menu_layout()
+                id="navbar",
+                children=[
+                    html.H1(
+                        id="title",
+                        className="navbar-title",
+                        children=["BeAScout - Visualization tool", 
+                                  html.H6(
+                                      id="subtitle",
+                                      className="navbar-subtitle",
+                                      children="Explore the transfermarket"
+                                  )],
+                        style={"font-weight" : "600"}
+                    )
+                ], 
+                style={"background" : "white", "color" : "black", "padding-top" : "15px", "padding-left" : "50px",
+                       "font-family" : "Helvetica", "border-bottom" : "4px solid black"}
             ),
 
-            # Right column
             html.Div(
-                id="right-column",
-                className="nine columns",
+                id="pitch-div",
+                className="pitch-div-1",
                 children=[
-                    pitch,
-                    scatterplot1,
-                    scatterplot2
+                    html.Div(
+                        id="first-graph",
+                        className="pitch_best",
+                        children=[
+                            pitch
+                        ]
+                    ),
                 ],
             ),
         ],
+        style={"display" : "flex", "flex-direction" : "column", "justify-content" : "center", "gap" : "50px", "background" : "white"}
     )
 
     # Define interactions
     @app.callback(
-        Output(scatterplot1.html_id, "figure"), [
-        Input("select-color-scatter-1", "value"),
-        Input(scatterplot2.html_id, 'selectedData')
-    ])
-    def update_scatter_1(selected_color, selected_data):
-        return scatterplot1.update(selected_color, selected_data)
+        Output("my-output", "children"),
+        [Input('select-countries-pitch', 'value'),
+         Input('select-age-higherlower', 'value'),
+         Input('select-age-input', 'value'), 
+         Input('select-value-higherlower', 'value'),
+         Input('select-value-input', 'value'),
+         Input('select-attacker-pitch', 'value'),
+         Input('select-midfielder-pitch', 'value'),
+         Input('select-defender-pitch', 'value'),
+         Input('select-keeper-pitch', 'value')])
+    def update_countries(selected_countries, selected_higher_lower_age, selected_age, selected_higher_lower_value, selected_value, selected_attacker_attribute,
+                         selected_midfielder_attribute, selected_defender_attribute, selected_keeper_attribute):
+        if selected_countries == None:
+            input_countries = []
+        else:
+            input_countries = selected_countries
+        best_forwards, best_defenders, best_midfielders, best_keeper = pitch.find_best_players(
+            filters={"attack": selected_attacker_attribute, "defense": selected_defender_attribute, "goalkeeper": selected_keeper_attribute, "midfield": selected_midfielder_attribute}, 
+            age_filter=[selected_higher_lower_age, selected_age], 
+            value=[selected_higher_lower_value, selected_value], 
+            countries=input_countries
+        )
+        return f"FORWARDS {best_forwards['player']} DEFS {best_defenders['player']} KEEPER {best_keeper['player']} MIDS {best_midfielders['player']}"
+        # return pitch.update(filters={"attack": "goals", "defense":"tackles", "goalkeeper":"gk_clean_sheets", "midfield":"passes"}, age_filter=["higher", 0], 
+        #        value=["higher", 0], countries=selected_countries)
+        
 
     @app.callback(
         Output(scatterplot2.html_id, "figure"), [
