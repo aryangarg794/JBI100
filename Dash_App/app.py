@@ -42,14 +42,9 @@ if __name__ == '__main__':
                 id="pitch-div",
                 className="pitch-div-1",
                 children=[
-                    html.Div(
-                        id="first-graph",
-                        className="pitch_best",
-                        children=[
-                            pitch
-                        ]
-                    ),
+                    pitch
                 ],
+                style={"justify-content" : "center"}
             ),
         ],
         style={"display" : "flex", "flex-direction" : "column", "justify-content" : "center", "gap" : "50px", "background" : "white"}
@@ -57,7 +52,7 @@ if __name__ == '__main__':
 
     # Define interactions
     @app.callback(
-        Output("my-output", "children"),
+        Output("pitch", "figure"),
         [Input('select-countries-pitch', 'value'),
          Input('select-age-higherlower', 'value'),
          Input('select-age-input', 'value'), 
@@ -73,15 +68,15 @@ if __name__ == '__main__':
             input_countries = []
         else:
             input_countries = selected_countries
+
         best_forwards, best_defenders, best_midfielders, best_keeper = pitch.find_best_players(
             filters={"attack": selected_attacker_attribute, "defense": selected_defender_attribute, "goalkeeper": selected_keeper_attribute, "midfield": selected_midfielder_attribute}, 
             age_filter=[selected_higher_lower_age, selected_age], 
             value=[selected_higher_lower_value, selected_value], 
             countries=input_countries
         )
-        return f"FORWARDS {best_forwards['player']} DEFS {best_defenders['player']} KEEPER {best_keeper['player']} MIDS {best_midfielders['player']}"
-        # return pitch.update(filters={"attack": "goals", "defense":"tackles", "goalkeeper":"gk_clean_sheets", "midfield":"passes"}, age_filter=["higher", 0], 
-        #        value=["higher", 0], countries=selected_countries)
+        
+        return pitch.update(best_forwards, best_defenders, best_midfielders, best_keeper)
         
 
     @app.callback(
