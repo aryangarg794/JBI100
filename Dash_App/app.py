@@ -4,7 +4,12 @@ from jbi100_app.views.pitch_and_stats import BestPlayersPitch, make_filter_boxes
 from jbi100_app.views.scatterplot import Scatterplot
 
 from dash import html, Input, Output
+from dash.dependencies import ALL
+import plotly.graph_objects as go
 import plotly.express as px
+
+
+import json
 
 
 if __name__ == '__main__':
@@ -42,7 +47,8 @@ if __name__ == '__main__':
                 id="pitch-div",
                 className="pitch-div-1",
                 children=[
-                    pitch
+                    pitch,
+                    html.Div(id="my-output")
                 ],
                 style={"justify-content" : "center"}
             ),
@@ -62,7 +68,7 @@ if __name__ == '__main__':
          Input('select-midfielder-pitch', 'value'),
          Input('select-defender-pitch', 'value'),
          Input('select-keeper-pitch', 'value')])
-    def update_countries(selected_countries, selected_higher_lower_age, selected_age, selected_higher_lower_value, selected_value, selected_attacker_attribute,
+    def update_pitch(selected_countries, selected_higher_lower_age, selected_age, selected_higher_lower_value, selected_value, selected_attacker_attribute,
                          selected_midfielder_attribute, selected_defender_attribute, selected_keeper_attribute):
         if selected_countries == None:
             input_countries = []
@@ -77,6 +83,15 @@ if __name__ == '__main__':
         )
         
         return pitch.update(best_forwards, best_defenders, best_midfielders, best_keeper)
+    
+    # define click interaction for plot 1
+    @app.callback(
+            Output("pitch-player-graph", "figure"), 
+            [Input("pitch", 'clickData')])
+    def on_player_click(click_data):
+        player = click_data['points'][0]['text']
+        position = click_data['points'][0]['customdata'][1]
+        return pitch.update_player(player, position)
         
 
     @app.callback(

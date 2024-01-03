@@ -11,6 +11,7 @@ class BestPlayersPitch(html.Div):
 
     def __init__(self):
         self.name = "pitch"
+        self.name_player_graph = "pitch-player-graph"
         self.dimensions = PitchDimensions()
         self.background = VerticalStripesBackground(
             colours=["#81B622", "#72A11E"],
@@ -25,13 +26,30 @@ class BestPlayersPitch(html.Div):
         super().__init__(
             className="pitch_players",
             children=[
-                html.Div(id="my-output"),
                 make_filter_boxes(),
                 dcc.Graph(
                     id=self.name
+                ),
+                dcc.Graph(
+                    id=self.name_player_graph, 
+                    figure=self.blank_fig()
                 )
             ]
         )
+
+
+    #############################################################################################################################
+    # blank_fig refactored from https://stackoverflow.com/questions/66637861/how-to-not-show-default-dcc-graph-template-in-dash #
+    #############################################################################################################################
+        
+    def blank_fig(self):
+
+        self.fig = go.Figure(go.Scatter(x=[], y = []))
+        self.fig.update_layout(template = None)
+        self.fig.update_xaxes(showgrid = False, showticklabels = False, zeroline=False)
+        self.fig.update_yaxes(showgrid = False, showticklabels = False, zeroline=False)
+
+        return self.fig
 
     def find_best_players(self, filters={"attack": "goals", "defense":"tackles", "goalkeeper":"gk_clean_sheets", "midfield":"passes"}, age_filter=["higher", 0],
                           value=["higher", 0], countries=[]):
@@ -75,7 +93,7 @@ class BestPlayersPitch(html.Div):
 
     def update(self, best_forwards, best_defenders, best_midfielders, best_keeper):
 
-        self.fig = make_pitch_figure(self.dimensions, pitch_background=self.background, marking_width=2)
+        self.fig = make_pitch_figure(self.dimensions, pitch_background=self.background, marking_colour="white", marking_width=4)
 
         # add attackers
 
@@ -86,6 +104,14 @@ class BestPlayersPitch(html.Div):
             mode="markers+text",
             name="Lines, Markers and Text",
             showlegend=False,
+            customdata=best_forwards,
+            hovertemplate="<b> %{customdata[0]} (%{customdata[1]}) </b> <br>" +
+            "<b>Age:</b> %{customdata[3]} <br>" +
+            "<b>Country:</b> %{customdata[2]} <br>" + 
+            "<b>Goals:</b> %{customdata[122]} <br>" +
+            "<b>xG:</b> %{customdata[134]} <br>" +
+            "<b>Shots on Target:</b> %{customdata[124]} <br>" +
+            "<extra></extra>",
             text=text_attacker,
             textposition="top center"
         ))
@@ -98,6 +124,14 @@ class BestPlayersPitch(html.Div):
             mode="markers+text",
             name="Lines, Markers and Text",
             showlegend=False,
+            customdata=best_midfielders,
+            hovertemplate="<b> %{customdata[0]} (%{customdata[1]}) </b> <br>" +
+            "<b>Age:</b> %{customdata[3]} <br>" +
+            "<b>Country:</b> %{customdata[2]} <br>" + 
+            "<b>Assists:</b> %{customdata[66]} <br>" +
+            "<b>Passes:</b> %{customdata[53]} <br>" +
+            "<b>Through Balls:</b> %{customdata[78]} <br>" +
+            "<extra></extra>",
             text=text_midfielder,
             textposition="top center"
         ))
@@ -110,6 +144,14 @@ class BestPlayersPitch(html.Div):
             mode="markers+text",
             name="Lines, Markers and Text",
             showlegend=False,
+            customdata=best_defenders,
+            hovertemplate="<b> %{customdata[0]} (%{customdata[1]}) </b> <br>" +
+            "<b>Age:</b> %{customdata[3]} <br>" +
+            "<b>Country:</b> %{customdata[2]} <br>" + 
+            "<b>Interceptions:</b> %{customdata[18]} <br>" +
+            "<b>Tackles:</b> %{customdata[6]} <br>" +
+            "<b>Bookings:</b> %{customdata[40]} <br>" +
+            "<extra></extra>",
             text=text_defender,
             textposition="top center"
         ))
@@ -122,9 +164,36 @@ class BestPlayersPitch(html.Div):
             mode="markers+text",
             name="Lines, Markers and Text",
             showlegend=False,
+            customdata=best_keeper,
+            hovertemplate="<b> %{customdata[0]} (%{customdata[1]}) </b> <br>" +
+            "<b>Age:</b> %{customdata[3]} <br>" +
+            "<b>Country:</b> %{customdata[2]} <br>" + 
+            "<b>Clean Sheets:</b> %{customdata[18]} <br>" +
+            "<b>Saves:</b> %{customdata[13]} <br>" +
+            "<b>Crosses Stopped:</b> %{customdata[44]} <br>" +
+            "<extra></extra>",
             text=text_goalkeeper,
             textposition="top center"
         ))
+
+        self.fig.update_layout(
+            title_text="Best players in each position",
+            title_font_size=35
+        )
+        return self.fig
+    
+    def update_player(self, player, position):
+        self.fig = go.Figure()
+
+        if position == 'GK':
+            df_player = self.df_keepers_combined.loc[self.df_keepers_combined['player']==player]
+        else:
+            df_player = self.df_player_combined.loc[self.df_player_combined['player']==player]
+
+        self.fig.add_trace(
+            go.Scatter(x=[0, 0.5, 1, 2, 2.2], y=[1.23, 2.5, 0.42, 3, 1], hovertemplate=df_player['player'].to_string())
+        )
+
         return self.fig
 
 
