@@ -1,9 +1,13 @@
-from dash import dcc, html
 from plotly_football_pitch import make_pitch_figure, PitchDimensions, VerticalStripesBackground
-from ..config import country_list, attributes_keepers, attributes_players
+from ..config import COUNTRY_LIST, ATTRIBUTES_PLAYERS, ATTRIBUTES_KEEPERS
 
+from dash import dcc, html
+import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
+import plotly.express as px
+
+
 import copy
 
 
@@ -30,13 +34,23 @@ class BestPlayersPitch(html.Div):
                 dcc.Graph(
                     id=self.name
                 ),
-                dcc.Graph(
-                    id=self.name_player_graph, 
-                    figure=self.blank_fig()
+                html.Div(
+                    id="player-card",
+                    children=[
+                        html.Div(
+                            id="left-column-player",
+                            style={"background" : "#111111", "color" : "white", "display" : "flex", 
+                                   "justify-content" : "center", "align-items" : "center",}
+                        ),
+                        dcc.Graph(
+                            id=self.name_player_graph, 
+                            figure=self.blank_fig(),
+                        )
+                    ],
+                    style={"display" : "flex", "flex-direction" : "row"}
                 )
             ]
         )
-
 
     #############################################################################################################################
     # blank_fig refactored from https://stackoverflow.com/questions/66637861/how-to-not-show-default-dcc-graph-template-in-dash #
@@ -105,7 +119,7 @@ class BestPlayersPitch(html.Div):
             name="Lines, Markers and Text",
             showlegend=False,
             customdata=best_forwards,
-            hovertemplate="<b> %{customdata[0]} (%{customdata[1]}) </b> <br>" +
+            hovertemplate="<b>%{customdata[0]} (%{customdata[1]}) </b> <br>" +
             "<b>Age:</b> %{customdata[3]} <br>" +
             "<b>Country:</b> %{customdata[2]} <br>" + 
             "<b>Goals:</b> %{customdata[122]} <br>" +
@@ -125,7 +139,7 @@ class BestPlayersPitch(html.Div):
             name="Lines, Markers and Text",
             showlegend=False,
             customdata=best_midfielders,
-            hovertemplate="<b> %{customdata[0]} (%{customdata[1]}) </b> <br>" +
+            hovertemplate="<b>%{customdata[0]} (%{customdata[1]}) </b> <br>" +
             "<b>Age:</b> %{customdata[3]} <br>" +
             "<b>Country:</b> %{customdata[2]} <br>" + 
             "<b>Assists:</b> %{customdata[66]} <br>" +
@@ -145,7 +159,7 @@ class BestPlayersPitch(html.Div):
             name="Lines, Markers and Text",
             showlegend=False,
             customdata=best_defenders,
-            hovertemplate="<b> %{customdata[0]} (%{customdata[1]}) </b> <br>" +
+            hovertemplate="<b>%{customdata[0]} (%{customdata[1]}) </b> <br>" +
             "<b>Age:</b> %{customdata[3]} <br>" +
             "<b>Country:</b> %{customdata[2]} <br>" + 
             "<b>Interceptions:</b> %{customdata[18]} <br>" +
@@ -165,7 +179,7 @@ class BestPlayersPitch(html.Div):
             name="Lines, Markers and Text",
             showlegend=False,
             customdata=best_keeper,
-            hovertemplate="<b> %{customdata[0]} (%{customdata[1]}) </b> <br>" +
+            hovertemplate="<b>%{customdata[0]} (%{customdata[1]}) </b> <br>" +
             "<b>Age:</b> %{customdata[3]} <br>" +
             "<b>Country:</b> %{customdata[2]} <br>" + 
             "<b>Clean Sheets:</b> %{customdata[18]} <br>" +
@@ -178,21 +192,43 @@ class BestPlayersPitch(html.Div):
 
         self.fig.update_layout(
             title_text="Best players in each position",
-            title_font_size=35
+            title_font_size=35,
+            template="plotly_dark"
         )
         return self.fig
     
-    def update_player(self, player, position):
-        self.fig = go.Figure()
+    def normalize(self, attr_max, attr_min, value):
+        ans = (value - attr_min)/(attr_max-attr_min)
+        return ans
+    
+    def update_player(self, player, position, selected_attributes):
 
         if position == 'GK':
             df_player = self.df_keepers_combined.loc[self.df_keepers_combined['player']==player]
         else:
             df_player = self.df_player_combined.loc[self.df_player_combined['player']==player]
 
+        display_attributes = df_player[selected_attributes].T.values.tolist()
+
+        colors = []
+        for attribute in selected_attributes:
+            value = df_player[attribute].values[0]
+            attr_max = self.df_player_combined[attribute].max()
+            attr_min = self.df_player_combined[attribute].min()
+
+            norm_value = self.normalize(attr_max, attr_min, value)
+            colors.append(f'rgba(124,252,0,{norm_value})')
+
+        self.fig = go.Figure()
         self.fig.add_trace(
-            go.Scatter(x=[0, 0.5, 1, 2, 2.2], y=[1.23, 2.5, 0.42, 3, 1], hovertemplate=df_player['player'].to_string())
+            go.Table(
+                cells=dict(values=[df_player[selected_attributes].columns, display_attributes],
+                            fill_color=['black', np.array(colors)],
+                            align='left')
+            )
         )
+        self.fig.for_each_trace(lambda t: t.update(header_fill_color = 'rgba(0,0,0,0)'))
+        self.fig.update_layout(template="plotly_dark")
 
         return self.fig
 
@@ -208,7 +244,7 @@ def make_filter_boxes():
                 html.Label("Country"),
                 dcc.Dropdown(
                     id="select-countries-pitch",
-                    options=[{"label": i, "value": i} for i in country_list],
+                    options=[{"label": i, "value": i} for i in COUNTRY_LIST],
                     multi=True,
                     value=None,
                     searchable=True,
@@ -260,7 +296,7 @@ def make_filter_boxes():
                 html.Label("Attacker Attribute"),
                 dcc.Dropdown(
                     id="select-attacker-pitch",
-                    options=[{"label": i.replace("_", " ").capitalize(), "value": i} for i in attributes_players],
+                    options=[{"label": i.replace("_", " ").capitalize(), "value": i} for i in ATTRIBUTES_PLAYERS],
                     value="goals",
                     searchable=True,
                     clearable=False,
@@ -276,7 +312,7 @@ def make_filter_boxes():
                 html.Label("Midfielder Attribute"),
                 dcc.Dropdown(
                     id="select-midfielder-pitch",
-                    options=[{"label": i.replace("_", " ").capitalize(), "value": i} for i in attributes_players],
+                    options=[{"label": i.replace("_", " ").capitalize(), "value": i} for i in ATTRIBUTES_PLAYERS],
                     value="passes",
                     searchable=True,
                     clearable=False,
@@ -292,7 +328,7 @@ def make_filter_boxes():
                 html.Label("Defender Attribute"),
                 dcc.Dropdown(
                     id="select-defender-pitch",
-                    options=[{"label": i.replace("_", " ").capitalize(), "value": i} for i in attributes_players],
+                    options=[{"label": i.replace("_", " ").capitalize(), "value": i} for i in ATTRIBUTES_PLAYERS],
                     value="tackles",
                     searchable=True,
                     clearable=False,
@@ -308,7 +344,7 @@ def make_filter_boxes():
                 html.Label("Keeper Attribute"),
                 dcc.Dropdown(
                     id="select-keeper-pitch",
-                    options=[{"label": i.replace("_", " ").capitalize(), "value": i} for i in attributes_keepers],
+                    options=[{"label": i.replace("_", " ").capitalize(), "value": i} for i in ATTRIBUTES_KEEPERS],
                     value="gk_clean_sheets",
                     searchable=True,
                     clearable=False,

@@ -11,12 +11,12 @@ df_player_combined = pd.read_csv('../Data/FIFA World Cup 2022 Player Data/stats_
 df_player_combined_keepers = pd.read_csv('../Data/FIFA World Cup 2022 Player Data/stats_combined_keepers.csv', delimiter=',')
 
 
-country_list = df_player_combined['team'].unique()
-country_list.sort()
+COUNTRY_LIST = df_player_combined['team'].unique()
+COUNTRY_LIST.sort()
 
 
 # TODO: create enum converting bad names to good names 
-attributes_players = list(df_player_combined.select_dtypes(include=[np.number]).columns.values)
-attributes_keepers = list(df_player_combined_keepers.select_dtypes(include=[np.number]).columns.values)
-attributes_players.sort()
-attributes_keepers.sort()
+ATTRIBUTES_PLAYERS = list(df_player_combined.select_dtypes(include=[np.number]).columns.values)
+ATTRIBUTES_KEEPERS = list(df_player_combined_keepers.select_dtypes(include=[np.number]).columns.values)
+ATTRIBUTES_PLAYERS.sort()
+ATTRIBUTES_KEEPERS.sort()

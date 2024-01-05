@@ -6,3 +6,18 @@ body {
     margin: 0px;
 }
 
+#select-player-attrs-dropdown .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-player-attrs-dropdown .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+/* changes the text color of input box */
+#select-player-attrs-dropdown .Select-value-label {
+    color: white !important;
+}
+
