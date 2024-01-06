@@ -198,8 +198,7 @@ class BestPlayersPitch(html.Div):
         return self.fig
     
     def normalize(self, attr_max, attr_min, value):
-        ans = (value - attr_min)/(attr_max-attr_min)
-        return ans
+        return (value - attr_min)/(attr_max-attr_min)
     
     def update_player(self, player, position, selected_attributes):
 
@@ -208,13 +207,18 @@ class BestPlayersPitch(html.Div):
         else:
             df_player = self.df_player_combined.loc[self.df_player_combined['player']==player]
 
+
         display_attributes = df_player[selected_attributes].T.values.tolist()
 
         colors = []
         for attribute in selected_attributes:
             value = df_player[attribute].values[0]
-            attr_max = self.df_player_combined[attribute].max()
-            attr_min = self.df_player_combined[attribute].min()
+            if position == "GK":
+                attr_max = self.df_keepers_combined[attribute].max()
+                attr_min = self.df_keepers_combined[attribute].min()
+            else:
+                attr_max = self.df_player_combined[attribute].max()
+                attr_min = self.df_player_combined[attribute].min()
 
             norm_value = self.normalize(attr_max, attr_min, value)
             colors.append(f'rgba(124,252,0,{norm_value})')

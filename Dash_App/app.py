@@ -113,7 +113,26 @@ if __name__ == '__main__':
         else:
             BASE_VALUES = ['gk_goals_against', 'gk_saves']
 
-        div = html.Div(
+        if position == 'GK':
+            div = html.Div(
+            id="select-player-attrs",
+            children=[
+                f"{player}, {position}, {value}",
+                dcc.Dropdown(
+                    id="select-player-attrs-dropdown",
+                    options=[{"label": i.replace("_", " ").capitalize(), "value": i} for i in ATTRIBUTES_KEEPERS],
+                    multi=True,
+                    value=BASE_VALUES,
+                    searchable=True,
+                    clearable=False,
+                    placeholder="Select attributes to display",
+                    style={"margin-top" : "5px"}
+                ),
+            ],
+            style={"display" : "flex", "flex-direction" : "column", "width" : "100%"}
+            )
+        else:
+            div = html.Div(
             id="select-player-attrs",
             children=[
                 f"{player}, {position}, {value}",
