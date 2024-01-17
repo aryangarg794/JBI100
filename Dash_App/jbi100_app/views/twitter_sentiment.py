@@ -10,7 +10,7 @@ from ..config import PLAYER_LIST
 
 class TwitterSentiment(html.Div):
     def __init__(self):
-        self.df_sentiment = pd.read_csv('C:/Users/Gebruiker/Desktop/TUe/Y4/Q2/Dataset/FIFA DataSet/Data/Data/FIFA World Cup 2022 Twitter Dataset/sentiment_mentions.csv', delimiter=',')
+        self.df_sentiment = pd.read_csv('//Data/FIFA World Cup 2022 Twitter Dataset/sentiment_mentions.csv', delimiter=',')
 
         super().__init__(
             className="sentiment_players",
