@@ -1,6 +1,7 @@
 from jbi100_app.main import app
 from jbi100_app.views.menu import make_menu_layout
 from jbi100_app.views.pitch_and_stats import BestPlayersPitch, make_filter_boxes
+from jbi100_app.views.twitter_sentiment import TwitterSentiment
 from jbi100_app.views.scatterplot import Scatterplot
 from jbi100_app.config import ATTRIBUTES_KEEPERS, ATTRIBUTES_PLAYERS
 
@@ -17,6 +18,7 @@ if __name__ == '__main__':
 
     # Instantiate custom views
     pitch = BestPlayersPitch()
+    sentiment = TwitterSentiment()
     scatterplot1 = Scatterplot("Scatterplot 1", 'sepal_length', 'sepal_width', df)
     scatterplot2 = Scatterplot("Scatterplot 2", 'petal_length', 'petal_width', df)
 
@@ -51,6 +53,15 @@ if __name__ == '__main__':
                 ],
                 style={"justify-content" : "center"}
             ),
+            html.Div(
+                id="twit-sent",
+                className="twit-sent-1",
+                children=[
+                    sentiment,
+                    html.Div(id="my-twit-output")
+                ],
+                style={"justify-content" : "center"}
+            )
         ],
         style={"display" : "flex", "flex-direction" : "column", "justify-content" : "center", "gap" : "50px", "background" : "white"}
     )
@@ -150,5 +161,28 @@ if __name__ == '__main__':
             style={"display" : "flex", "flex-direction" : "column", "width" : "100%"}
             )
         return div
+
+    @app.callback(
+        Output("bar-chart", "figure"),
+        [Input("twit-scat", "clickData")]
+    )
+    def update_bar_chart(click_data):
+        selected_player = click_data['points'][0]['text'].split('<br>')[0]
+        player = re.sub(r'\([^)]*\)', '', selected_player).strip()
+        positive_tweets = int(click_data['points'][0]['text'].split('<br>')[-3].split(': ')[1])
+        neutral_tweets = int(click_data['points'][0]['text'].split('<br>')[-2].split(': ')[1])
+        negative_tweets = int(click_data['points'][0]['text'].split('<br>')[-1].split(': ')[1])
+
+        return sentiment.update_fig_bar(player, positive_tweets, neutral_tweets, negative_tweets)
+    
+    @app.callback(
+        Output("twit-scat", "figure"),
+        [Input("select-player", "value")]
+    )
+    def update_twitter_scatter(selected_players):
+        if selected_players == []:
+            return sentiment.blank_fig_task()
+        else:
+            return sentiment.update_scatter_player(selected_players)
         
     app.run_server(debug=True, dev_tools_ui=False)
