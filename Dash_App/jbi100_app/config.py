@@ -10,6 +10,9 @@ color_list2 = ["red", "purple"]
 df_player_combined = pd.read_csv('../Data/FIFA World Cup 2022 Player Data/stats_combined.csv', delimiter=',')
 df_player_combined_keepers = pd.read_csv('../Data/FIFA World Cup 2022 Player Data/stats_combined_keepers.csv', delimiter=',')
 
+PLAYER_LIST1 = df_player_combined['player']
+PLAYER_LIST2 = df_player_combined_keepers['player']
+PLAYER_LIST = pd.concat([PLAYER_LIST1, PLAYER_LIST2])
 
 COUNTRY_LIST = df_player_combined['team'].unique()
 COUNTRY_LIST.sort()
