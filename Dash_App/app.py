@@ -1,8 +1,6 @@
 from jbi100_app.main import app
-from jbi100_app.views.menu import make_menu_layout
-from jbi100_app.views.pitch_and_stats import BestPlayersPitch, make_filter_boxes
+from jbi100_app.views.pitch_and_stats import BestPlayersPitch
 from jbi100_app.views.twitter_sentiment import TwitterSentiment
-from jbi100_app.views.scatterplot import Scatterplot
 from jbi100_app.config import ATTRIBUTES_KEEPERS, ATTRIBUTES_PLAYERS
 
 
@@ -15,14 +13,15 @@ import pandas as pd
 import re
 
 if __name__ == '__main__':
-    # Create data
-    df = px.data.iris()
 
     # Instantiate custom views
     pitch = BestPlayersPitch()
     sentiment = TwitterSentiment()
-    scatterplot1 = Scatterplot("Scatterplot 1", 'sepal_length', 'sepal_width', df)
-    scatterplot2 = Scatterplot("Scatterplot 2", 'petal_length', 'petal_width', df)
+
+
+    ################################################################
+    #                       vis overall code                       #     
+    ################################################################
 
     app.layout = html.Div(
         id="app-container",
@@ -68,20 +67,28 @@ if __name__ == '__main__':
         style={"display" : "flex", "flex-direction" : "column", "justify-content" : "center", "gap" : "50px", "background" : "white"}
     )
 
-    # Define interactions
+
+    ################################################################
+    #                   code for task 1 - pitch plot               #     
+    ################################################################
+
+    
     @app.callback(
         Output("pitch", "figure"),
         [Input('select-countries-pitch', 'value'),
-         Input('select-age-higherlower', 'value'),
-         Input('select-age-input', 'value'), 
-         Input('select-value-higherlower', 'value'),
-         Input('select-value-input', 'value'),
+         Input('select-age', 'value'),
+         Input('select-value', 'value'),
          Input('select-attacker-pitch', 'value'),
          Input('select-midfielder-pitch', 'value'),
          Input('select-defender-pitch', 'value'),
-         Input('select-keeper-pitch', 'value')])
-    def update_pitch(selected_countries, selected_higher_lower_age, selected_age, selected_higher_lower_value, selected_value, selected_attacker_attribute,
-                         selected_midfielder_attribute, selected_defender_attribute, selected_keeper_attribute):
+         Input('select-keeper-pitch', 'value'), 
+         Input('select-attacker-slider', 'value'),
+         Input('select-midfielder-slider', 'value'),
+         Input('select-defender-slider', 'value'),
+         Input('select-keeper-slider', 'value'),])
+    def update_pitch(selected_countries, selected_age, selected_value, selected_attacker_attribute,
+                         selected_midfielder_attribute, selected_defender_attribute, selected_keeper_attribute, selected_attacker_attribute_slider,
+                         selected_midfielder_attribute_slider, selected_defender_attribute_slider, selected_keeper_attribute_slider):
         if selected_countries == None:
             input_countries = []
         else:
@@ -89,14 +96,26 @@ if __name__ == '__main__':
 
         best_forwards, best_defenders, best_midfielders, best_keeper = pitch.find_best_players(
             filters={"attack": selected_attacker_attribute, "defense": selected_defender_attribute, "goalkeeper": selected_keeper_attribute, "midfield": selected_midfielder_attribute}, 
-            age_filter=[selected_higher_lower_age, selected_age], 
-            value=[selected_higher_lower_value, selected_value], 
-            countries=input_countries
+            age_filter=selected_age, 
+            value_filter=selected_value, 
+            countries=input_countries, 
+            attribute_keeper_slider=selected_keeper_attribute_slider,
+            attribute_defender_slider=selected_defender_attribute_slider,
+            attribute_attacker_slider=selected_attacker_attribute_slider,
+            attribute_midfielder_slider=selected_midfielder_attribute_slider
         )
         
         return pitch.update(best_forwards, best_defenders, best_midfielders, best_keeper)
     
-    # define click interaction for plot 1
+    @app.callback(
+            Output("attributes-and-sliders", "children"), 
+            [Input('select-attacker-pitch', 'value'),
+            Input('select-midfielder-pitch', 'value'),
+            Input('select-defender-pitch', 'value'),
+            Input('select-keeper-pitch', 'value'),])
+    def on_attribute_change(selected_attacker_attribute, selected_midfielder_attribute, selected_defender_attribute, selected_keeper_attribute,):
+        return pitch.make_filter_boxes_bottom(selected_attacker_attribute, selected_midfielder_attribute, selected_defender_attribute, selected_keeper_attribute)
+    
     @app.callback(
             Output("pitch-player-graph", "figure"), 
             [Input("pitch", 'clickData'),
@@ -164,6 +183,15 @@ if __name__ == '__main__':
             )
         return div
 
+
+
+
+    ################################################################
+    #           code for task 4 - twitter sentiment analysis       #     
+    ################################################################
+
+
+
     @app.callback(
         Output("bar-chart", "figure"),
         [Input("twit-scat", "clickData")]
@@ -179,12 +207,11 @@ if __name__ == '__main__':
     
     @app.callback(
         Output("twit-scat", "figure"),
-        [Input("select-player", "value")]
+        [Input("select-player", "value"), 
+         Input("select-attribute", "value")]
     )
-    def update_twitter_scatter(selected_players):
-        if selected_players == []:
-            return sentiment.blank_fig_task()
-        else:
-            return sentiment.update_scatter_player(selected_players)
+    def update_twitter_scatter(selected_players, selected_attribute):
+        return sentiment.update_scatter_plot(selected_players, selected_attribute)
+        
         
     app.run_server(debug=True, dev_tools_ui=False)
