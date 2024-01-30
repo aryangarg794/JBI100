@@ -31,12 +31,7 @@ class TwitterSentiment(html.Div):
 
     
     def update_scatter_plot(self, selected_players, chosen_attribute='age'):
-        color_mapping = {
-            'FW': 'orange',
-            'DF': 'red',
-            'GK': 'green',
-            'MF': 'blue',
-        }
+
         df_sentiment = copy.deepcopy(self.df_sentiment)
 
         if selected_players == [] or selected_players is None:
@@ -50,7 +45,6 @@ class TwitterSentiment(html.Div):
         self.df_player_combined['size'] = self.df_player_combined[chosen_attribute].apply(lambda value: ((value - attribute_min)/(attribute_max-attribute_min)) * 30)
 
         sizeref = 2.*max(self.df_player_combined['size'])/(100**2)
-        print(df_player['mentions_count'].loc[df_player['position'] == 'FW'])
 
         df_player_fw = df_player.loc[df_player['position'] == 'FW']
         df_player_mf = df_player.loc[df_player['position'] == 'MF']
@@ -102,7 +96,7 @@ class TwitterSentiment(html.Div):
             x=df_player_df['mentions_count'],
             y=df_player_df['sentiment_score'],
             mode='markers',  # Set mode to 'markers' for a scatter plot
-            text=df_player_df['player'] + " (" + df_player['position'] + ")" + "<br>" + 
+            text=df_player_df['player'] + " (" + df_player_df['position'] + ")" + "<br>" + 
             "Age: " + df_player_df['age'].astype(str) + "<br>" +
             "Country: " + df_player_df['team'] + "<br>" +
             "Mentions: " + df_player_df['mentions_count'].astype(str) + "<br>" + 

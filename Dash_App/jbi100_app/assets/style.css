@@ -21,3 +21,325 @@ body {
     color: white !important;
 }
 
+#select-player1-attr1 .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-player1-attr1 .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+/* changes the text color of input box */
+#select-player1-attr1 .Select-value-label {
+    color: white !important;
+}
+
+
+#select-player1-attr2 .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-player1-attr2 .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+/* changes the text color of input box */
+#select-player1-attr2 .Select-value-label {
+    color: white !important;
+}
+
+#select-player1-attr3 .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-player1-attr3 .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+/* changes the text color of input box */
+#select-player1-attr3 .Select-value-label {
+    color: white !important;
+}
+
+#select-player1-attr4 .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-player1-attr4 .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+/* changes the text color of input box */
+#select-player1-attr4 .Select-value-label {
+    color: white !important;
+}
+
+#select-player2-attr1 .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-player2-attr1 .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+/* changes the text color of input box */
+#select-player2-attr1 .Select-value-label {
+    color: white !important;
+}
+
+#select-player2-attr2 .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-player2-attr2 .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+/* changes the text color of input box */
+#select-player2-attr2 .Select-value-label {
+    color: white !important;
+}
+
+#select-player2-attr3 .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-player2-attr3 .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+/* changes the text color of input box */
+#select-player2-attr3 .Select-value-label {
+    color: white !important;
+}
+
+
+#select-player2-attr4 .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-player2-attr4 .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+/* changes the text color of input box */
+#select-player2-attr4 .Select-value-label {
+    color: white !important;
+}
+
+#select-player3-attr1 .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-player3-attr1 .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+/* changes the text color of input box */
+#select-player3-attr1 .Select-value-label {
+    color: white !important;
+}
+
+
+#select-player3-attr2 .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-player3-attr2 .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+/* changes the text color of input box */
+#select-player3-attr2 .Select-value-label {
+    color: white !important;
+}
+
+#select-player3-attr3 .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-player3-attr3 .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+/* changes the text color of input box */
+#select-player3-attr3 .Select-value-label {
+    color: white !important;
+}
+
+#select-player3-attr4 .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-player3-attr4 .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+/* changes the text color of input box */
+#select-player3-attr4 .Select-value-label {
+    color: white !important;
+}
+
+#select-player1 .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-player1 .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+/* changes the text color of input box */
+#select-player1 .Select-value-label {
+    color: white !important;
+}
+
+
+#select-player2 .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-player2 .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+/* changes the text color of input box */
+#select-player2 .Select-value-label {
+    color: white !important;
+}
+
+#select-player3 .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-player3 .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+/* changes the text color of input box */
+#select-player3 .Select-value-label {
+    color: white !important;
+}
+
+
+#select-players-single .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-players-single .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+/* changes the text color of input box */
+#select-players-single .Select-value-label {
+    color: white !important;
+}
+
+
+#select-single-attr1 .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-single-attr1 .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+/* changes the text color of input box */
+#select-single-attr1 .Select-value-label {
+    color: white !important;
+}
+
+#select-single-attr2 .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-single-attr2 .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+/* changes the text color of input box */
+#select-single-attr2 .Select-value-label {
+    color: white !important;
+}
+
+
+#select-single-attr3 .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-single-attr3 .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+/* changes the text color of input box */
+#select-single-attr3 .Select-value-label {
+    color: white !important;
+}
+
+#select-single-attr4 .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-single-attr4 .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+/* changes the text color of input box */
+#select-single-attr4 .Select-value-label {
+    color: white !important;
+}
+
+
+#type-of-comparison .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#type-of-comparison .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+/* changes the text color of input box */
+#type-of-comparison .Select-value-label {
+    color: white !important;
+}

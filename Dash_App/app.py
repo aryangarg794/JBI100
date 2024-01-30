@@ -1,6 +1,7 @@
 from jbi100_app.main import app
 from jbi100_app.views.pitch_and_stats import BestPlayersPitch
 from jbi100_app.views.twitter_sentiment import TwitterSentiment
+from jbi100_app.views.player_comparison import PlayerComparison 
 from jbi100_app.config import ATTRIBUTES_KEEPERS, ATTRIBUTES_PLAYERS
 
 
@@ -17,6 +18,7 @@ if __name__ == '__main__':
     # Instantiate custom views
     pitch = BestPlayersPitch()
     sentiment = TwitterSentiment()
+    comparison = PlayerComparison()
 
 
     ################################################################
@@ -60,6 +62,14 @@ if __name__ == '__main__':
                 children=[
                     sentiment,
                     html.Div(id="my-twit-output")
+                ],
+                style={"justify-content" : "center"}
+            ),
+            html.Div(
+                id="player-comp",
+                className="comp-1",
+                children=[
+                    comparison,
                 ],
                 style={"justify-content" : "center"}
             )
@@ -137,11 +147,11 @@ if __name__ == '__main__':
         value = df_vals["market_value_in_eur_y"].loc[df_vals['name'] == player].values[0]
 
         if position == "FW":
-            BASE_VALUES = ['goals', 'xg']
+            BASE_VALUES = ['goals', 'xg', 'pens_made', 'npxg_per_shot', 'minutes', 'dribbles_completed', 'dribbles', 'miscontrols', 'passes_received', 'shots_on_target']
         elif position == "MF":
-            BASE_VALUES = ['passes', 'assists']
+            BASE_VALUES = ['passes', 'assists', 'aerials_won', 'passes_completed', 'passes_total_distance', 'passes_short', 'passes_medium', 'crosses_into_penalty_area', 'through_balls']
         elif position == "DF":
-            BASE_VALUES = ['tackles']
+            BASE_VALUES = ['tackles', 'interceptions', 'tackles_interceptions', 'blocked_shots', 'blocked_passes', 'blocks', 'dribbled_past', 'tackles_won']
         else:
             BASE_VALUES = ['gk_goals_against', 'gk_saves']
 
@@ -212,6 +222,71 @@ if __name__ == '__main__':
     )
     def update_twitter_scatter(selected_players, selected_attribute):
         return sentiment.update_scatter_plot(selected_players, selected_attribute)
+    
+
+    ################################################################
+    #                 code for task 2 - player comparison          #     
+    ################################################################
+
+
+    @app.callback(
+        Output("graph-area", "children"),
+        [Input("type-of-comparison", "value")]
+    )
+    def update_version(selected_version):
+        if selected_version == "Side-by-Side":
+            return comparison.side_by_side()
+        elif selected_version == "Single-Graph":
+            return comparison.single_view()
+        
+
+    @app.callback(
+        Output("sbs-player1", "figure"),
+        [Input("select-player1", "value"),
+         Input("select-player1-attr1", "value"),
+         Input("select-player1-attr2", "value"),
+         Input("select-player1-attr3", "value"),
+         Input("select-player1-attr4", "value"),]
+    )
+    def update_player1(selected_player, selected_attribute1, selected_attribute2, selected_attribute3, selected_attribute4):
+        return comparison.update_side_by_side_view(selected_player, selected_attribute1, selected_attribute2, selected_attribute3, selected_attribute4)
+    
+
+    @app.callback(
+        Output("sbs-player2", "figure"),
+        [Input("select-player2", "value"),
+         Input("select-player2-attr1", "value"),
+         Input("select-player2-attr2", "value"),
+         Input("select-player2-attr3", "value"),
+         Input("select-player2-attr4", "value"),]
+    )
+    def update_player2(selected_player, selected_attribute1, selected_attribute2, selected_attribute3, selected_attribute4):
+        return comparison.update_side_by_side_view(selected_player, selected_attribute1, selected_attribute2, selected_attribute3, selected_attribute4)
+    
+    @app.callback(
+        Output("sbs-player3", "figure"),
+        [Input("select-player3", "value"),
+         Input("select-player3-attr1", "value"),
+         Input("select-player3-attr2", "value"),
+         Input("select-player3-attr3", "value"),
+         Input("select-player3-attr4", "value"),]
+    )
+    def update_player3(selected_player, selected_attribute1, selected_attribute2, selected_attribute3, selected_attribute4):
+        return comparison.update_side_by_side_view(selected_player, selected_attribute1, selected_attribute2, selected_attribute3, selected_attribute4)
+    
+    @app.callback(
+        Output("single-view-graph", "figure"),
+        [Input("select-players-single", "value"),
+         Input("select-single-attr1", "value"),
+         Input("select-single-attr2", "value"),
+         Input("select-single-attr3", "value"),
+         Input("select-single-attr4", "value"),]
+    )
+    def update_player3(selected_players, selected_attribute1, selected_attribute2, selected_attribute3, selected_attribute4):
+        return comparison.update_single_graph_view(selected_players, selected_attribute1, selected_attribute2, selected_attribute3, selected_attribute4)
+
+
+
         
         
     app.run_server(debug=True, dev_tools_ui=False)

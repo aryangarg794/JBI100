@@ -8,8 +8,8 @@ df_player_combined = pd.read_csv('../Data/FIFA World Cup 2022 Player Data/stats_
 df_player_combined_keepers = pd.read_csv('../Data/FIFA World Cup 2022 Player Data/stats_combined_keepers.csv', delimiter=',')
 
 PLAYER_LIST_OUTFIELD = df_player_combined['player']
-PLAYER_LIST2_KEEPERS = df_player_combined_keepers['player']
-PLAYER_LIST = pd.concat([PLAYER_LIST_OUTFIELD, PLAYER_LIST2_KEEPERS])
+PLAYER_LIST_KEEPERS = df_player_combined_keepers['player']
+PLAYER_LIST = pd.concat([PLAYER_LIST_OUTFIELD, PLAYER_LIST_KEEPERS])
 
 COUNTRY_LIST = df_player_combined['team'].unique()
 COUNTRY_LIST.sort()
