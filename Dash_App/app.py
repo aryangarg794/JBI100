@@ -3,6 +3,7 @@ from jbi100_app.views.pitch_and_stats import BestPlayersPitch
 from jbi100_app.views.twitter_sentiment import TwitterSentiment
 from jbi100_app.views.player_comparison import PlayerComparison
 from jbi100_app.views.compare_idea2 import CompareIdea2 
+
 from jbi100_app.config import ATTRIBUTES_KEEPERS, ATTRIBUTES_PLAYERS
 
 
@@ -75,6 +76,7 @@ if __name__ == '__main__':
                 ],
                 style={"justify-content" : "center"}
             )
+
         ],
         style={"display" : "flex", "flex-direction" : "column", "justify-content" : "center", "gap" : "50px", "background" : "white"}
     )
