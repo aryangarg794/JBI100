@@ -1,7 +1,8 @@
 from jbi100_app.main import app
 from jbi100_app.views.pitch_and_stats import BestPlayersPitch
 from jbi100_app.views.twitter_sentiment import TwitterSentiment
-from jbi100_app.views.player_comparison import PlayerComparison 
+from jbi100_app.views.player_comparison import PlayerComparison
+from jbi100_app.views.compare_idea2 import CompareIdea2 
 from jbi100_app.config import ATTRIBUTES_KEEPERS, ATTRIBUTES_PLAYERS
 
 
@@ -19,6 +20,7 @@ if __name__ == '__main__':
     pitch = BestPlayersPitch()
     sentiment = TwitterSentiment()
     comparison = PlayerComparison()
+    compare_idea2 = CompareIdea2()
 
 
     ################################################################
@@ -62,6 +64,14 @@ if __name__ == '__main__':
                 children=[
                     sentiment,
                     html.Div(id="my-twit-output")
+                ],
+                style={"justify-content" : "center"}
+            ),
+            html.Div(
+                id="comp-idea-2",
+                className="comp-idea-2",
+                children=[
+                    compare_idea2,
                 ],
                 style={"justify-content" : "center"}
             ),
@@ -286,7 +296,18 @@ if __name__ == '__main__':
         return comparison.update_single_graph_view(selected_players, selected_attribute1, selected_attribute2, selected_attribute3, selected_attribute4)
 
 
+    ## Compare idea 2 ##
 
-        
+    @app.callback(
+        Output("compare-bar", "figure"),
+        [Input("player1-dropdown", "value"), 
+        Input("player2-dropdown", "value"),
+        Input("pick-attribute", "value")]
+    )
+    def update_comparison_chart_2(player1, player2, selected_stat):
+        return compare_idea2.update_compare_idea2_chart(player1, player2, selected_stat)
+
+
+
         
     app.run_server(debug=True, dev_tools_ui=False)
