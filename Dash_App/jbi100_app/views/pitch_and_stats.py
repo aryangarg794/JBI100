@@ -125,7 +125,8 @@ class BestPlayersPitch(html.Div):
 
     def update(self, best_forwards, best_defenders, best_midfielders, best_keeper):
 
-        self.fig = make_pitch_figure(self.dimensions, pitch_background=self.background, marking_colour="white", marking_width=4, figure_height_pixels=1200, figure_width_pixels=1600)
+        self.fig = make_pitch_figure(self.dimensions, pitch_background=self.background, marking_colour="white", 
+                                     marking_width=4, figure_height_pixels=1200, figure_width_pixels=1600)
 
         # add attackers
         best_forwards_augmented = self.add_valuation_column(best_forwards)

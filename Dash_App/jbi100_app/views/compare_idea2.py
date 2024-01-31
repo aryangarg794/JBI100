@@ -61,9 +61,12 @@ class CompareIdea2(html.Div):
         
 
         self.fig = go.Figure()
-        self.fig.add_trace(go.Bar(x=players, y=values, marker_color=colors, hoverinfo='none'))
+        self.fig.add_trace(go.Bar(x=values, y=players, marker_color=colors, hoverinfo='none', orientation='h'))
         self.fig.update_layout(title=f'{selected_stat.replace("_", " ").capitalize()} Comparison for {", ".join(player for player in players)}', 
                                template="plotly_dark")
+        
+        self.fig.update_xaxes(title_text=selected_stat.replace("_", " ").capitalize())
+        self.fig.update_yaxes(title_text='Players')
 
         return go.FigureWidget(self.fig)
 

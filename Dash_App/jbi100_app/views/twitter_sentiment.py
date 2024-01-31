@@ -7,11 +7,13 @@ import plotly.graph_objects as go
 import pandas as pd
 import copy
 from ..config import PLAYER_LIST, ATTRIBUTES_PLAYERS
+import numpy as np
 
 class TwitterSentiment(html.Div):
     def __init__(self):
         self.df_sentiment = pd.read_csv('../Data/FIFA World Cup 2022 Twitter Dataset/sentiment_mentions.csv', delimiter=',')
         self.df_player_combined = pd.read_csv('../Data/FIFA World Cup 2022 Player Data/stats_combined.csv', delimiter=',')
+        self.df_player_valuations = pd.read_csv('../Data/Player Valuation/simple_valuations.csv', delimiter=',')
 
         super().__init__(
             className="sentiment_players",
@@ -29,6 +31,25 @@ class TwitterSentiment(html.Div):
             ],
         )
 
+    def add_valuation_column(self, df):
+        
+        df_copy = copy.deepcopy(df)
+        
+        names = df['player'].tolist()
+        names_in_val = self.df_player_valuations['name'].tolist()
+        temp = []
+
+        for name in names:
+            if name in names_in_val:
+                value = self.df_player_valuations["market_value_in_eur_y"].loc[self.df_player_valuations["name"] == name].values[0]
+                temp.append(value)
+            else:
+                temp.append(0.0)
+        
+        df_copy.loc[:, "valuation"] = temp
+
+        return df_copy
+
     
     def update_scatter_plot(self, selected_players, chosen_attribute='age'):
 
@@ -39,19 +60,25 @@ class TwitterSentiment(html.Div):
         else:
             df_player = df_sentiment[df_sentiment['player'].isin(selected_players)]
 
-        attribute_max = self.df_player_combined[chosen_attribute].max()
-        attribute_min = self.df_player_combined[chosen_attribute].min()
+        df_combined_copy = self.add_valuation_column(self.df_player_combined)
+        merged_df = pd.merge(df_player, df_combined_copy, on="player", how="inner")
+        merged_df.columns = merged_df.columns.str.removesuffix("_x")
+        merged_df.fillna(0)
+        attribute_max = merged_df[chosen_attribute].max()
+        attribute_min = merged_df[chosen_attribute].min()
 
-        self.df_player_combined['size'] = self.df_player_combined[chosen_attribute].apply(lambda value: ((value - attribute_min)/(attribute_max-attribute_min)) * 30)
+        merged_df['size'] = merged_df[chosen_attribute].apply(lambda value: ((value - attribute_min)/(attribute_max-attribute_min)) * 30)
+        
 
-        sizeref = 2.*max(self.df_player_combined['size'])/(100**2)
+        sizeref = 2.*max(merged_df['size'])/(100**2)
 
-        df_player_fw = df_player.loc[df_player['position'] == 'FW']
-        df_player_mf = df_player.loc[df_player['position'] == 'MF']
-        df_player_df = df_player.loc[df_player['position'] == 'DF']
-        df_player_gk = df_player.loc[df_player['position'] == 'GK']
+        df_player_fw = merged_df.loc[merged_df['position'] == 'FW']
+        df_player_mf = merged_df.loc[merged_df['position'] == 'MF']
+        df_player_df = merged_df.loc[merged_df['position'] == 'DF']
+        df_player_gk = merged_df.loc[merged_df['position'] == 'GK']
 
         self.fig = go.Figure()
+        print(df_player_fw['size'])
 
         self.fig.add_trace(go.Scatter(
             name="Forwards",
@@ -59,18 +86,20 @@ class TwitterSentiment(html.Div):
             y=df_player_fw['sentiment_score'],
             mode='markers',  # Set mode to 'markers' for a scatter plot
             text=df_player_fw['player'] + " (" + df_player_fw['position'] + ")" + "<br>" + 
-            "Age: " + df_player_fw['age'].astype(str) + "<br>" +
             "Country: " + df_player_fw['team'] + "<br>" +
             "Mentions: " + df_player_fw['mentions_count'].astype(str) + "<br>" + 
+            chosen_attribute.replace("_", " ").capitalize() + ": " + df_player_fw[chosen_attribute].astype(str) + "<br>" +
             "Positive Sentiments: " + df_player_fw['positive_tweets'].astype(str) + "<br>" +
             "Neutral Sentiments: " + df_player_fw['neutral_tweets'].astype(str) + "<br>" +
             "Negative Sentiments: " + df_player_fw['negative_tweets'].astype(str),
             hoverinfo = 'text',
             marker=dict(
                 color='orange',
-                size=self.df_player_combined['size'].tolist()
+                size=df_player_fw['size'].tolist()
             )
         ))
+
+        print('here')
 
         self.fig.add_trace(go.Scatter(
             name="Midfielders",
@@ -78,16 +107,16 @@ class TwitterSentiment(html.Div):
             y=df_player_mf['sentiment_score'],
             mode='markers',  # Set mode to 'markers' for a scatter plot
             text=df_player_mf['player'] + " (" + df_player_mf['position'] + ")" + "<br>" + 
-            "Age: " + df_player_mf['age'].astype(str) + "<br>" +
             "Country: " + df_player_mf['team'] + "<br>" +
             "Mentions: " + df_player_mf['mentions_count'].astype(str) + "<br>" + 
+            chosen_attribute.replace("_", " ").capitalize() + ": " + df_player_mf[chosen_attribute].astype(str) + "<br>" +
             "Positive Sentiments: " + df_player_mf['positive_tweets'].astype(str) + "<br>" +
             "Neutral Sentiments: " + df_player_mf['neutral_tweets'].astype(str) + "<br>" +
             "Negative Sentiments: " + df_player_mf['negative_tweets'].astype(str),
             hoverinfo = 'text',
             marker=dict(
                 color='blue',
-                size=self.df_player_combined['size'].tolist()
+                size=df_player_mf['size'].tolist()
             )
         ))
 
@@ -97,16 +126,16 @@ class TwitterSentiment(html.Div):
             y=df_player_df['sentiment_score'],
             mode='markers',  # Set mode to 'markers' for a scatter plot
             text=df_player_df['player'] + " (" + df_player_df['position'] + ")" + "<br>" + 
-            "Age: " + df_player_df['age'].astype(str) + "<br>" +
             "Country: " + df_player_df['team'] + "<br>" +
             "Mentions: " + df_player_df['mentions_count'].astype(str) + "<br>" + 
+            chosen_attribute.replace("_", " ").capitalize() + ": " + df_player_df[chosen_attribute].astype(str) + "<br>" +
             "Positive Sentiments: " + df_player_df['positive_tweets'].astype(str) + "<br>" +
             "Neutral Sentiments: " + df_player_df['neutral_tweets'].astype(str) + "<br>" +
             "Negative Sentiments: " + df_player_df['negative_tweets'].astype(str),
             hoverinfo = 'text',
             marker=dict(
                 color='red',
-                size=self.df_player_combined['size'].tolist()
+                size=df_player_df['size'].tolist()
             )
         ))
 
@@ -116,16 +145,16 @@ class TwitterSentiment(html.Div):
             y=df_player_gk['sentiment_score'],
             mode='markers',  # Set mode to 'markers' for a scatter plot
             text=df_player_gk['player'] + " (" + df_player_gk['position'] + ")" + "<br>" + 
-            "Age: " + df_player_gk['age'].astype(str) + "<br>" +
             "Country: " + df_player_gk['team'] + "<br>" +
             "Mentions: " + df_player_gk['mentions_count'].astype(str) + "<br>" + 
+            chosen_attribute.replace("_", " ").capitalize() + ": " + df_player_gk[chosen_attribute].astype(str) + "<br>" +
             "Positive Sentiments: " + df_player_gk['positive_tweets'].astype(str) + "<br>" +
             "Neutral Sentiments: " + df_player_gk['neutral_tweets'].astype(str) + "<br>" +
             "Negative Sentiments: " + df_player_gk['negative_tweets'].astype(str),
             hoverinfo = 'text',
             marker=dict(
                 color='green',
-                size=self.df_player_combined['size'].tolist()
+                size=df_player_gk['size'].tolist()
             )
         ))
 
@@ -166,7 +195,9 @@ class TwitterSentiment(html.Div):
         return self.fig
                                          
 def make_filter_boxes():
-    
+    new_attrs = ['valuation'] + ATTRIBUTES_PLAYERS
+    new_attrs.sort()
+    attr_options = [{"label": i.replace("_", " ").capitalize(), "value": i} for i in new_attrs]
     return html.Div(
         id="control-twitter-card",
         children=[
@@ -192,9 +223,9 @@ def make_filter_boxes():
                 html.Label("Size Attribute"),
                 dcc.Dropdown(
                     id="select-attribute",
-                    options=[{"label": i.replace("_", " ").capitalize(), "value": i} for i in ATTRIBUTES_PLAYERS],
+                    options= attr_options,
                     multi=False,
-                    value='age',
+                    value='valuation',
                     searchable=True,
                     placeholder="Select Attribute (Keeper Attributes Excluded)", 
                     style={"margin-top" : "5px"}
