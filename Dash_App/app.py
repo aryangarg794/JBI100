@@ -2,8 +2,7 @@ from jbi100_app.main import app
 from jbi100_app.views.pitch_and_stats import BestPlayersPitch
 from jbi100_app.views.twitter_sentiment import TwitterSentiment
 from jbi100_app.views.player_comparison import PlayerComparison
-from jbi100_app.views.compare_idea2 import CompareIdea2 
-
+from jbi100_app.views.compare_idea2 import CompareIdea2, make_filter_boxes 
 from jbi100_app.config import ATTRIBUTES_KEEPERS, ATTRIBUTES_PLAYERS
 
 
@@ -12,6 +11,43 @@ from dash.dependencies import ALL
 import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
+
+
+class Task2Data():
+    
+    def __init__(self):
+        self.player1 = "Harry Kane"
+        self.player2 = "Lionel Messi"
+        self.player3 = "Jude Bellingham"
+
+        self.single_view_players = []
+        self.bar_view_players = []
+
+    def combine1(self):
+        self.single_view_players.append(self.player1)
+        self.single_view_players.append(self.player2)
+        self.single_view_players.append(self.player3)
+
+        return list(set(self.single_view_players))
+    
+    def combine2(self):
+        self.bar_view_players.append(self.player1)
+        self.bar_view_players.append(self.player2)
+        self.bar_view_players.append(self.player3)
+
+        return list(set(self.bar_view_players))
+    
+    def add_players_single_view(self, players):
+        for player in players:
+            self.single_view_players.append(player)
+
+        return list(set(self.single_view_players))
+    
+    def add_players_bar(self, players):
+        for player in players:
+            self.bar_view_players.append(player)
+
+        return list(set(self.bar_view_players))
 
 import re
 
@@ -22,6 +58,8 @@ if __name__ == '__main__':
     sentiment = TwitterSentiment()
     comparison = PlayerComparison()
     compare_idea2 = CompareIdea2()
+
+    task2data = Task2Data()
 
 
     ################################################################
@@ -76,7 +114,6 @@ if __name__ == '__main__':
                 ],
                 style={"justify-content" : "center"}
             )
-
         ],
         style={"display" : "flex", "flex-direction" : "column", "justify-content" : "center", "gap" : "50px", "background" : "white"}
     )
@@ -239,11 +276,12 @@ if __name__ == '__main__':
     )
     def update_version(selected_version):
         if selected_version == "Side-by-Side":
-            return comparison.side_by_side()
+            return comparison.side_by_side(task2data.player1, task2data.player2, task2data.player3)
         elif selected_version == "Single-Graph":
-            return comparison.single_view()
+            return comparison.single_view(task2data.combine1())
         elif selected_version == "Bar Graph with Single Attribute":
             return compare_idea2
+            
         
 
     @app.callback(
@@ -255,7 +293,8 @@ if __name__ == '__main__':
          Input("select-player1-attr4", "value"),]
     )
     def update_player1(selected_player, selected_attribute1, selected_attribute2, selected_attribute3, selected_attribute4):
-        return comparison.update_side_by_side_view(selected_player, selected_attribute1, selected_attribute2, selected_attribute3, selected_attribute4)
+        task2data.player1 = selected_player
+        return comparison.update_side_by_side_view(task2data.player1, selected_attribute1, selected_attribute2, selected_attribute3, selected_attribute4)
     
 
     @app.callback(
@@ -267,7 +306,8 @@ if __name__ == '__main__':
          Input("select-player2-attr4", "value"),]
     )
     def update_player2(selected_player, selected_attribute1, selected_attribute2, selected_attribute3, selected_attribute4):
-        return comparison.update_side_by_side_view(selected_player, selected_attribute1, selected_attribute2, selected_attribute3, selected_attribute4)
+        task2data.player2 = selected_player
+        return comparison.update_side_by_side_view(task2data.player2, selected_attribute1, selected_attribute2, selected_attribute3, selected_attribute4)
     
     @app.callback(
         Output("sbs-player3", "figure"),
@@ -278,7 +318,8 @@ if __name__ == '__main__':
          Input("select-player3-attr4", "value"),]
     )
     def update_player3(selected_player, selected_attribute1, selected_attribute2, selected_attribute3, selected_attribute4):
-        return comparison.update_side_by_side_view(selected_player, selected_attribute1, selected_attribute2, selected_attribute3, selected_attribute4)
+        task2data.player3 = selected_player
+        return comparison.update_side_by_side_view(task2data.player3, selected_attribute1, selected_attribute2, selected_attribute3, selected_attribute4)
     
     @app.callback(
         Output("single-view-graph", "figure"),
@@ -288,8 +329,14 @@ if __name__ == '__main__':
          Input("select-single-attr3", "value"),
          Input("select-single-attr4", "value"),]
     )
-    def update_player3(selected_players, selected_attribute1, selected_attribute2, selected_attribute3, selected_attribute4):
-        return comparison.update_single_graph_view(selected_players, selected_attribute1, selected_attribute2, selected_attribute3, selected_attribute4)
+    def update_players(selected_players, selected_attribute1, selected_attribute2, selected_attribute3, selected_attribute4):
+        task2data.single_view_players.clear()
+        task2data.single_view_players = task2data.combine1()
+        task2data.single_view_players = task2data.add_players_single_view(selected_players)
+        
+
+        return comparison.update_single_graph_view(task2data.single_view_players, selected_attribute1, selected_attribute2, selected_attribute3, 
+                                                   selected_attribute4)
 
 
     ## Compare idea 2 ##

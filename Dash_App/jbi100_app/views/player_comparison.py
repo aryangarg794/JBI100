@@ -112,7 +112,7 @@ class PlayerComparison(html.Div):
         return fig
     
 
-    def side_by_side(self):
+    def side_by_side(self, player1, player2, player3):
         return html.Div(
             id="side-by-side",
             children=[
@@ -125,7 +125,7 @@ class PlayerComparison(html.Div):
                         dcc.Dropdown(
                             id="select-player1",
                             options=[{"label": i, "value": i} for i in PLAYER_LIST],
-                            value="Harry Kane",
+                            value=player1,
                             searchable=True,
                             placeholder="Select Player", 
                         ),
@@ -133,7 +133,7 @@ class PlayerComparison(html.Div):
                         dcc.Dropdown(
                             id="select-player2",
                             options=[{"label": i, "value": i} for i in PLAYER_LIST],
-                            value="Jude Bellingham",
+                            value=player2,
                             searchable=True,
                             placeholder="Select Player", 
                         ),
@@ -141,7 +141,7 @@ class PlayerComparison(html.Div):
                         dcc.Dropdown(
                             id="select-player3",
                             options=[{"label": i, "value": i} for i in PLAYER_LIST],
-                            value="Lionel Messi",
+                            value=player3,
                             searchable=True,
                             placeholder="Select Player", 
                         ),
@@ -282,7 +282,7 @@ class PlayerComparison(html.Div):
                    "color" : "white"}
         )
     
-    def single_view(self):
+    def single_view(self, players):
         return html.Div(
             id="single-view",
             children=[
@@ -295,7 +295,7 @@ class PlayerComparison(html.Div):
                             id="select-players-single",
                             options=[{"label": i, "value": i} for i in PLAYER_LIST],
                             multi=True,
-                            value=["Lionel Messi", "Harry Kane", "Jude Bellingham"],
+                            value=players,
                             searchable=True,
                             placeholder="Select Players", 
                         ),
