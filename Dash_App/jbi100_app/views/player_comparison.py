@@ -51,18 +51,11 @@ class PlayerComparison(html.Div):
         normalized_attr3 = self.get_normalized_value(df_copy, attribute3, player)
         normalized_attr4 = self.get_normalized_value(df_copy, attribute4, player)      
 
-        attributes_raw = [attribute1, attribute2, attribute3, attribute4] 
-
         attributes = [attribute1.replace("_", " ").capitalize(), attribute2.replace("_", " ").capitalize(), 
                       attribute3.replace("_", " ").capitalize(), attribute4.replace("_", " ").capitalize()]
         radial = [normalized_attr1, normalized_attr2, normalized_attr3, normalized_attr4]
 
-        hover_text = []
-        for attribute in attributes_raw:
-            hover_text.append(("<b>{play}</b><br><b>{attr}</b>: {value} <br>").format(play=player, attr=attribute.replace("_", " ").capitalize(), 
-                                                                                      value=df_copy[attribute].loc[df_copy['player']==player].values[0]))
-
-        fig = px.line_polar(r=radial, theta=attributes, line_close=True, range_r=[0, 5], line_shape='spline', hover_data=hover_text)
+        fig = px.line_polar(r=radial, theta=attributes, line_close=True, range_r=[0, 5], line_shape='spline')
         fig.update_traces(fill='toself')
 
         fig.update_layout(template="plotly_dark")
@@ -359,7 +352,7 @@ class PlayerComparison(html.Div):
                 html.Label("Choose type of player comparison"),
                 dcc.Dropdown(
                     id="type-of-comparison",
-                    options=["Side-by-Side", "Single-Graph"],
+                    options=["Side-by-Side", "Single-Graph", "Bar Graph with Single Attribute"],
                     multi=False,
                     value="Side-by-Side",
                     style={"margin-top" : "5px"}

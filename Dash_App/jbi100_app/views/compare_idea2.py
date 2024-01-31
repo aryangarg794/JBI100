@@ -10,14 +10,18 @@ from dash import callback_context
 from dash.exceptions import PreventUpdate
 from dash import no_update
 import copy
+import matplotlib
+import random
 
 
 class CompareIdea2(html.Div):
     def __init__(self):
         self.df_player_combined = pd.read_csv('../Data/FIFA World Cup 2022 Player Data/stats_combined.csv', delimiter=',')
+        self.name = "bar-comparison"
 
         super().__init__(
             className="compare-idea-2",
+            id=self.name,
             children=[
                 html.H1("Soccer Player Comparison"),
                 make_filter_boxes(),
@@ -25,10 +29,14 @@ class CompareIdea2(html.Div):
                     id='compare-bar',
                     style={'clickData' : 'event'},
                 ),
-            ]
+            ],
+            style={"background" : "#111111", "color" : "white"}
         )
 
-    def update_compare_idea2_chart(self, player1, player2, selected_stat):
+    def normalize(self, max_att, min_att, value):
+        return (value-min_att)/(max_att-min_att)
+
+    def update_compare_idea2_chart(self, players, selected_stat):
         df_compare = copy.deepcopy(self.df_player_combined)
 
         
@@ -36,23 +44,28 @@ class CompareIdea2(html.Div):
         # Select data for the chosen stat
         df1 = df_compare[['player', selected_stat]]
 
-        df_player1 = df1.loc[df1["player"] == player1]
-        val_player1 = df_player1.iloc[0][selected_stat]
-        val_player1
+        max_att = df_compare[selected_stat].max()
+        min_att = df_compare[selected_stat].min()
 
-        df_player2 = df1.loc[df1["player"] == player2]
-        val_player2 = df_player2.iloc[0][selected_stat]
-        val_player2
+        values = []
+        colors = []
+
+        for player in players:
+            df_player = df1.loc[df1["player"] == player]
+            val_player = df_player.iloc[0][selected_stat]
+            values.append(val_player)
+            norm_value = self.normalize(max_att, min_att, val_player)
+            colors.append(f'rgba(124,252,0,{norm_value})')
+
+        
+        
 
         self.fig = go.Figure()
-        self.fig.add_trace(go.Bar(x=[player1, player2], y=[val_player1, val_player2], marker_color=['blue', 'orange']))
-        self.fig.update_layout(title=f'{selected_stat} Comparison', template="plotly_dark")
+        self.fig.add_trace(go.Bar(x=players, y=values, marker_color=colors, hoverinfo='none'))
+        self.fig.update_layout(title=f'{selected_stat.replace("_", " ").capitalize()} Comparison for {", ".join(player for player in players)}', 
+                               template="plotly_dark")
 
         return go.FigureWidget(self.fig)
-
-
-
-
 
 
 
@@ -65,26 +78,12 @@ def make_filter_boxes():
                 children=[
                     html.Label("Player 1:"),
                         dcc.Dropdown(
-                            id="player1-dropdown",
+                            id="player-dropdown",
                             options=[{"label": i, "value": i} for i in PLAYER_LIST],
-                            value="Harry Kane",
+                            value=["Harry Kane", "Jude Bellingham", "Lionel Messi"],
+                            multi=True,
                             searchable=True,
-                            placeholder="Select Player", 
-                        ),
-                ],
-                style={"width": "20%", "margin-bottom": "15px"}
-            ),
-
-            html.Div(
-                id="chose-player2",
-                children=[
-                    html.Label("Player 2:"),
-                        dcc.Dropdown(
-                            id="player2-dropdown",
-                            options=[{"label": i, "value": i} for i in PLAYER_LIST],
-                            value="Jude Bellingham",
-                            searchable=True,
-                            placeholder="Select Player", 
+                            placeholder="Select Players", 
                         ),
                 ],
                 style={"width": "20%", "margin-bottom": "15px"}

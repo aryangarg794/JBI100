@@ -68,14 +68,6 @@ if __name__ == '__main__':
                 style={"justify-content" : "center"}
             ),
             html.Div(
-                id="comp-idea-2",
-                className="comp-idea-2",
-                children=[
-                    compare_idea2,
-                ],
-                style={"justify-content" : "center"}
-            ),
-            html.Div(
                 id="player-comp",
                 className="comp-1",
                 children=[
@@ -248,6 +240,8 @@ if __name__ == '__main__':
             return comparison.side_by_side()
         elif selected_version == "Single-Graph":
             return comparison.single_view()
+        elif selected_version == "Bar Graph with Single Attribute":
+            return compare_idea2
         
 
     @app.callback(
@@ -300,12 +294,11 @@ if __name__ == '__main__':
 
     @app.callback(
         Output("compare-bar", "figure"),
-        [Input("player1-dropdown", "value"), 
-        Input("player2-dropdown", "value"),
+        [Input("player-dropdown", "value"), 
         Input("pick-attribute", "value")]
     )
-    def update_comparison_chart_2(player1, player2, selected_stat):
-        return compare_idea2.update_compare_idea2_chart(player1, player2, selected_stat)
+    def update_comparison_chart_2(selected_players, selected_stat):
+        return compare_idea2.update_compare_idea2_chart(selected_players, selected_stat)
 
 
 
