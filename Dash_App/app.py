@@ -120,7 +120,7 @@ if __name__ == '__main__':
 
 
     ################################################################
-    #                   code for task 1 - pitch plot               #     
+    #                   code for task 2 - pitch plot               #     
     ################################################################
 
     
@@ -245,7 +245,7 @@ if __name__ == '__main__':
 
     @app.callback(
         Output("bar-chart", "figure"),
-        [Input("twit-scat", "clickData")]
+        [Input("twit-scat", "hoverData")]
     )
     def update_bar_chart(click_data):
         selected_player = click_data['points'][0]['text'].split('<br>')[0]
@@ -266,7 +266,7 @@ if __name__ == '__main__':
     
 
     ################################################################
-    #                 code for task 2 - player comparison          #     
+    #                 code for task 3 - player comparison          #     
     ################################################################
 
 

@@ -63,6 +63,8 @@ class TwitterSentiment(html.Div):
         df_combined_copy = self.add_valuation_column(self.df_player_combined)
         merged_df = pd.merge(df_player, df_combined_copy, on="player", how="inner")
         merged_df.columns = merged_df.columns.str.removesuffix("_x")
+        merged_df.columns = merged_df.columns.str.removesuffix("_y")
+        merged_df = merged_df.loc[:,~merged_df.columns.duplicated()].copy()
         merged_df.fillna(0)
         attribute_max = merged_df[chosen_attribute].max()
         attribute_min = merged_df[chosen_attribute].min()
@@ -78,13 +80,12 @@ class TwitterSentiment(html.Div):
         df_player_gk = merged_df.loc[merged_df['position'] == 'GK']
 
         self.fig = go.Figure()
-        print(df_player_fw['size'])
 
         self.fig.add_trace(go.Scatter(
             name="Forwards",
             x=df_player_fw['mentions_count'],
             y=df_player_fw['sentiment_score'],
-            mode='markers',  # Set mode to 'markers' for a scatter plot
+            mode='markers', 
             text=df_player_fw['player'] + " (" + df_player_fw['position'] + ")" + "<br>" + 
             "Country: " + df_player_fw['team'] + "<br>" +
             "Mentions: " + df_player_fw['mentions_count'].astype(str) + "<br>" + 
@@ -99,13 +100,11 @@ class TwitterSentiment(html.Div):
             )
         ))
 
-        print('here')
-
         self.fig.add_trace(go.Scatter(
             name="Midfielders",
             x=df_player_mf['mentions_count'],
             y=df_player_mf['sentiment_score'],
-            mode='markers',  # Set mode to 'markers' for a scatter plot
+            mode='markers',  
             text=df_player_mf['player'] + " (" + df_player_mf['position'] + ")" + "<br>" + 
             "Country: " + df_player_mf['team'] + "<br>" +
             "Mentions: " + df_player_mf['mentions_count'].astype(str) + "<br>" + 
@@ -124,7 +123,7 @@ class TwitterSentiment(html.Div):
             name="Defenders",
             x=df_player_df['mentions_count'],
             y=df_player_df['sentiment_score'],
-            mode='markers',  # Set mode to 'markers' for a scatter plot
+            mode='markers',  
             text=df_player_df['player'] + " (" + df_player_df['position'] + ")" + "<br>" + 
             "Country: " + df_player_df['team'] + "<br>" +
             "Mentions: " + df_player_df['mentions_count'].astype(str) + "<br>" + 
@@ -143,7 +142,7 @@ class TwitterSentiment(html.Div):
             name="Goalkeepers",
             x=df_player_gk['mentions_count'],
             y=df_player_gk['sentiment_score'],
-            mode='markers',  # Set mode to 'markers' for a scatter plot
+            mode='markers',  
             text=df_player_gk['player'] + " (" + df_player_gk['position'] + ")" + "<br>" + 
             "Country: " + df_player_gk['team'] + "<br>" +
             "Mentions: " + df_player_gk['mentions_count'].astype(str) + "<br>" + 
@@ -189,7 +188,7 @@ class TwitterSentiment(html.Div):
         )])
 
         self.fig.update_xaxes(title_text='Categories of Tweets')
-        self.fig.update_yaxes(title_text='Number of Tweets')
+        self.fig.update_yaxes(title_text='Number of Tweets', range=[0, 6000])
         self.fig.update_layout(title_text='Tweet sentiment distribution of ' + player, template="plotly_dark")
 
         return self.fig
