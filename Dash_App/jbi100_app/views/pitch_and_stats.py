@@ -147,7 +147,7 @@ class BestPlayersPitch(html.Div):
             "<b>Valuation:</b> €%{customdata[152]} <br>" +
             "<extra></extra>",
             text=text_attacker,
-            textposition="top center"
+            textposition="top center",
         ))
 
         # add midfielders 
@@ -213,6 +213,10 @@ class BestPlayersPitch(html.Div):
             textposition="top center"
         ))
 
+        self.fig.update_traces(
+            marker_size=20,
+        )
+
         self.fig.update_layout(
             title_text="Best players in each position",
             title_font_size=35,
@@ -246,18 +250,18 @@ class BestPlayersPitch(html.Div):
             norm_value = self.normalize(attr_max, attr_min, value)
             colors.append(f'rgba(124,252,0,{norm_value})')
 
-        self.fig = go.Figure()
-        self.fig.add_trace(
+        fig = go.Figure()
+        fig.add_trace(
             go.Table(
                 cells=dict(values=[df_player[selected_attributes].columns, display_attributes],
                             fill_color=['black', np.array(colors)],
                             align='left')
             )
         )
-        self.fig.for_each_trace(lambda t: t.update(header_fill_color = 'rgba(0,0,0,0)'))
-        self.fig.update_layout(template="plotly_dark")
+        fig.for_each_trace(lambda t: t.update(header_fill_color = 'rgba(0,0,0,0)'))
+        fig.update_layout(template="plotly_dark")
 
-        return self.fig
+        return fig
     
     def make_filter_boxes_top(self):
         return html.Div(

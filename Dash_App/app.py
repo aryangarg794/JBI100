@@ -2,6 +2,7 @@ from jbi100_app.main import app
 from jbi100_app.views.pitch_and_stats import BestPlayersPitch
 from jbi100_app.views.twitter_sentiment import TwitterSentiment
 from jbi100_app.views.player_comparison import PlayerComparison
+from jbi100_app.views.pcp_task1 import PCPTask1
 from jbi100_app.views.compare_idea2 import CompareIdea2, make_filter_boxes 
 from jbi100_app.config import ATTRIBUTES_KEEPERS, ATTRIBUTES_PLAYERS
 
@@ -58,6 +59,7 @@ if __name__ == '__main__':
     sentiment = TwitterSentiment()
     comparison = PlayerComparison()
     compare_idea2 = CompareIdea2()
+    pcp = PCPTask1()
 
     task2data = Task2Data()
 
@@ -89,11 +91,19 @@ if __name__ == '__main__':
             ),
 
             html.Div(
+                id="pcp-div",
+                className="pcp-div-1",
+                children=[
+                    pcp,
+                ],
+                style={"justify-content" : "center"}
+            ),
+
+            html.Div(
                 id="pitch-div",
                 className="pitch-div-1",
                 children=[
                     pitch,
-                    html.Div(id="my-output")
                 ],
                 style={"justify-content" : "center"}
             ),
@@ -102,7 +112,6 @@ if __name__ == '__main__':
                 className="twit-sent-1",
                 children=[
                     sentiment,
-                    html.Div(id="my-twit-output")
                 ],
                 style={"justify-content" : "center"}
             ),
@@ -117,6 +126,41 @@ if __name__ == '__main__':
         ],
         style={"display" : "flex", "flex-direction" : "column", "justify-content" : "center", "gap" : "50px", "background" : "white"}
     )
+
+    ################################################################
+    #            code for task 1 - relation between factors        #     
+    ################################################################
+
+    @app.callback(
+        Output("filter-pcp-plot", "children"),
+        [Input("keepers-or-players", "value")]
+    )
+    def update_version(selected_version):
+        match selected_version:
+            case "Player Attributes":
+                return pcp.make_attribute_selection_outfield()
+            case "Keeper Attributes":
+                return pcp.make_attribute_selection_keepers()
+            
+
+    @app.callback(
+        Output("pcp-plot", "figure"),
+        [Input("pcp-attribute-1", "value"),
+         Input("pcp-attribute-2", "value"), 
+         Input("pcp-attribute-3", "value"),
+         Input("pcp-attribute-4", "value")]
+    )
+    def update_pcp_plot(selected_attribute1, selected_attribute2, selected_attribute3, selected_attribute4):
+        return pcp.update_pcp(selected_attribute1, selected_attribute2, selected_attribute3, selected_attribute4)
+    
+
+    @app.callback(
+        Output("scatter-task1", "figure"),
+        [Input("pcp-attribute-1", "value"),
+         Input("pcp-attribute-2", "value")]
+    )
+    def update_pcp_plot(selected_attribute1, selected_attribute2):
+        return pcp.update_scatter(selected_attribute1, selected_attribute2)
 
 
     ################################################################
