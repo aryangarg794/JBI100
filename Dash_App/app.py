@@ -124,7 +124,7 @@ if __name__ == '__main__':
                 style={"justify-content" : "center"}
             )
         ],
-        style={"display" : "flex", "flex-direction" : "column", "justify-content" : "center", "gap" : "50px", "background" : "white"}
+        style={"display" : "flex", "flex-direction" : "column", "justify-content" : "center", "background" : "#111111"}
     )
 
     ################################################################
@@ -302,12 +302,21 @@ if __name__ == '__main__':
     
     @app.callback(
         Output("twit-scat", "figure"),
-        [Input("select-player", "value"), 
-         Input("select-attribute", "value")]
+        [Input("select-player", "value")]
     )
-    def update_twitter_scatter(selected_players, selected_attribute):
-        return sentiment.update_scatter_plot(selected_players, selected_attribute)
+    def update_twitter_scatter(selected_players):
+        return sentiment.update_scatter_plot(selected_players)
     
+
+    @app.callback(
+        Output("time-chart", "figure"),
+        [Input("twit-scat", "hoverData")]
+    )
+    def update_line(click_data):
+        selected_player = click_data['points'][0]['text'].split('<br>')[0]
+        player = re.sub(r'\([^)]*\)', '', selected_player).strip()
+        
+        return sentiment.update_time(player)
 
     ################################################################
     #                 code for task 3 - player comparison          #     

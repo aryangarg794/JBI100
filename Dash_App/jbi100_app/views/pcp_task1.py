@@ -52,6 +52,7 @@ class PCPTask1(html.Div):
             df_copy = copy.deepcopy(self.df_keepers_combined)
         else:
             df_copy = copy.deepcopy(self.df_player_combined)
+            df_copy = df_copy.drop(df_copy[df_copy['position'] == 'GK'].index)
 
 
         df_copy['position'].replace(['FW', 'MF', 'DF', 'GK'], [0, 1, 2, 3], inplace=True)
@@ -75,8 +76,9 @@ class PCPTask1(html.Div):
             df_copy = copy.deepcopy(self.df_keepers_combined)
         else:
             df_copy = copy.deepcopy(self.df_player_combined)
+            df_copy = df_copy.drop(df_copy[df_copy['position'] == 'GK'].index)
 
-        fig = px.scatter(df_copy, x=attribute1, y=attribute2, trendline='ols')
+        fig = px.scatter(df_copy, x=attribute1, y=attribute2, trendline='ols', color="position")
 
         fig.update_layout(template="plotly_dark", 
                           title_text=f"Comparison of {attribute1.replace('_', ' ').capitalize()} and {attribute2.replace('_', ' ').capitalize()}")
