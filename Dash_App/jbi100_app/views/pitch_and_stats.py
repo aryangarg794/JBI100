@@ -34,6 +34,7 @@ class BestPlayersPitch(html.Div):
             className="pitch_players",
             children=[
                 self.make_filter_boxes_top(), # filter boxes top are static compared to the filters on the bottom so we decouple them
+                html.H6("Click on players to learn more about them below"),
                 dcc.Graph(
                     id=self.name
                 ),

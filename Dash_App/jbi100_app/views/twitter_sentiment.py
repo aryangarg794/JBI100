@@ -21,6 +21,7 @@ class TwitterSentiment(html.Div):
             className="sentiment_players",
             children=[
                 html.H6("Sentiment analysis of Twitter Data per player"),
+                html.Label("Hover over players to get more insight"),
                 make_filter_boxes(),
                 dcc.Graph(
                     id='twit-scat',
