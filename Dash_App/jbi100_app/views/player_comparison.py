@@ -358,7 +358,7 @@ class PlayerComparison(html.Div):
     # the function to create the initial choice box
     def make_choice_box(self):
         return html.Div(
-            id="choose-version",
+            id="choose-version-1",
             children=[
                 html.Label("Choose type of player comparison"),
                 dcc.Dropdown(
