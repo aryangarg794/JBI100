@@ -29,7 +29,6 @@ class CompareIdea2(html.Div):
                 make_filter_boxes(),
                 dcc.Graph(
                     id='compare-bar',
-                    style={'clickData' : 'event'},
                 ),
             ],
             style={"background" : "#111111", "color" : "white", "padding-left" : "10px"}
@@ -78,7 +77,7 @@ class CompareIdea2(html.Div):
         self.fig.update_xaxes(title_text=selected_stat.replace("_", " ").capitalize())
         self.fig.update_yaxes(title_text='Players')
 
-        return go.FigureWidget(self.fig)
+        return self.fig
 
 
 # function to create the filter boxes for this view, we create a player selector and an attribute selector
