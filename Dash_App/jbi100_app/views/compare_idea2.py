@@ -110,6 +110,7 @@ def make_filter_boxes():
                     options=[{"label": i.replace("_", " ").capitalize(), "value": i} for i in ATTRIBUTES_PLAYERS],
                     multi=False,
                     value="goals",
+                    clearable=False,
                     searchable=True,
                     placeholder="Select Attribute (Keeper Attributes Excluded)", 
                 ),
