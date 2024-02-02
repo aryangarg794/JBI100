@@ -143,7 +143,7 @@ class BestPlayersPitch(html.Div):
 
         # make the pitch figure using the 3rd-party library plotly-football-pitch
         self.fig = make_pitch_figure(self.dimensions, pitch_background=self.background, marking_colour="white", 
-                                     marking_width=4, figure_height_pixels=1200, figure_width_pixels=1600)
+                                     marking_width=4, figure_height_pixels=800, figure_width_pixels=1200)
 
         # use the attackers and then add valuation column so that we can use it as an attribute
         best_forwards_augmented = self.add_valuation_column(best_forwards)
