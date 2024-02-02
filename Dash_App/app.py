@@ -299,7 +299,8 @@ if __name__ == '__main__':
             div = html.Div(
             id="select-player-attrs",
             children=[
-                f"{player}, {position}, {value}",
+                html.H2(f"{player} ({position}) has value €{value}"),
+                html.Label("The greener the better the stat"),
                 dcc.Dropdown(
                     id="select-player-attrs-dropdown",
                     options=[{"label": i.replace("_", " ").capitalize(), "value": i} for i in ATTRIBUTES_KEEPERS],
@@ -311,13 +312,14 @@ if __name__ == '__main__':
                     style={"margin-top" : "5px"}
                 ),
             ],
-            style={"display" : "flex", "flex-direction" : "column", "width" : "100%"}
+            style={"display" : "flex", "flex-direction" : "column", "width" : "100%", "padding" : "20px"}
             )
         else:
             div = html.Div(
             id="select-player-attrs",
             children=[
                 html.H2(f"{player} ({position}) has value €{value}"),
+                html.Label("The greener the better the stat"),
                 dcc.Dropdown(
                     id="select-player-attrs-dropdown",
                     options=[{"label": i.replace("_", " ").capitalize(), "value": i} for i in ATTRIBUTES_PLAYERS],

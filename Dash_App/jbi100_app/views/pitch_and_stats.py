@@ -58,7 +58,7 @@ class BestPlayersPitch(html.Div):
                     style={"display" : "flex", "flex-direction" : "row"}
                 )
             ], 
-            style={"width" : "100%"}
+            style={"width" : "100%", "color" : "white", "padding" : "10px"}
         )
 
     #############################################################################################################################
