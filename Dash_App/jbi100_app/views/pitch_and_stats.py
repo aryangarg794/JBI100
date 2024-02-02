@@ -64,7 +64,7 @@ class BestPlayersPitch(html.Div):
     def blank_fig(self):
 
         self.fig = go.Figure(go.Scatter(x=[], y = []))
-        self.fig.update_layout(template = None)
+        self.fig.update_layout(template = "plotly_dark")
         self.fig.update_xaxes(showgrid = False, showticklabels = False, zeroline=False)
         self.fig.update_yaxes(showgrid = False, showticklabels = False, zeroline=False)
 
@@ -237,6 +237,8 @@ class BestPlayersPitch(html.Div):
 
         display_attributes = df_player[selected_attributes].T.values.tolist()
 
+        attributes = [i.replace("_", " ").capitalize() for i in df_player[selected_attributes].columns]
+
         colors = []
         for attribute in selected_attributes:
             value = df_player[attribute].values[0]
@@ -253,13 +255,13 @@ class BestPlayersPitch(html.Div):
         fig = go.Figure()
         fig.add_trace(
             go.Table(
-                cells=dict(values=[df_player[selected_attributes].columns, display_attributes],
+                cells=dict(values=[attributes, display_attributes],
                             fill_color=['black', np.array(colors)],
                             align='left')
             )
         )
         fig.for_each_trace(lambda t: t.update(header_fill_color = 'rgba(0,0,0,0)'))
-        fig.update_layout(template="plotly_dark")
+        fig.update_layout(template="plotly_dark", font_size=14)
 
         return fig
     
@@ -309,8 +311,9 @@ class BestPlayersPitch(html.Div):
                     ],
                     style={"display" : "flex", "flex-direction" : "column", "gap" : "10px", "width" : "25%"}
                 ),
-        ], style={"display" : "flex", "flex-direction" : "row", "flex-wrap" : "wrap", "width" : "100%", "textAlign": "float-left", "gap" : "35px", 
-                  "padding" : "20px"}
+        ], 
+        style={"display" : "flex", "flex-direction" : "row", "flex-wrap" : "wrap", "width" : "100%", "textAlign": "float-left", "gap" : "35px", 
+                  "padding" : "20px", "color" : "white"}
     )
 
     def make_filter_boxes_bottom(self, attribute_attacker='goals', attribute_midfielder='passes', attribute_defender='tackles', 
@@ -417,7 +420,7 @@ class BestPlayersPitch(html.Div):
                 ),
         ], 
         style={"display" : "flex", "flex-direction" : "row", "flex-wrap" : "wrap", "width" : "100%", "textAlign": "float-left", "gap" : "35px", 
-                  "padding" : "20px"}
+                  "padding" : "20px", "color" : "white"}
     )
 
 

@@ -16,7 +16,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #select-player-attrs-dropdown .Select-value-label {
     color: white !important;
 }
@@ -31,7 +31,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #select-player1-attr1 .Select-value-label {
     color: white !important;
 }
@@ -47,7 +47,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #select-player1-attr2 .Select-value-label {
     color: white !important;
 }
@@ -62,7 +62,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #select-player1-attr3 .Select-value-label {
     color: white !important;
 }
@@ -77,7 +77,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #select-player1-attr4 .Select-value-label {
     color: white !important;
 }
@@ -92,7 +92,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #select-player2-attr1 .Select-value-label {
     color: white !important;
 }
@@ -107,7 +107,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #select-player2-attr2 .Select-value-label {
     color: white !important;
 }
@@ -122,7 +122,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #select-player2-attr3 .Select-value-label {
     color: white !important;
 }
@@ -138,7 +138,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #select-player2-attr4 .Select-value-label {
     color: white !important;
 }
@@ -153,7 +153,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #select-player3-attr1 .Select-value-label {
     color: white !important;
 }
@@ -169,7 +169,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #select-player3-attr2 .Select-value-label {
     color: white !important;
 }
@@ -184,7 +184,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #select-player3-attr3 .Select-value-label {
     color: white !important;
 }
@@ -199,7 +199,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #select-player3-attr4 .Select-value-label {
     color: white !important;
 }
@@ -214,7 +214,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #select-player1 .Select-value-label {
     color: white !important;
 }
@@ -230,7 +230,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #select-player2 .Select-value-label {
     color: white !important;
 }
@@ -245,7 +245,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #select-player3 .Select-value-label {
     color: white !important;
 }
@@ -261,7 +261,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #select-players-single .Select-value-label {
     color: white !important;
 }
@@ -277,7 +277,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #select-single-attr1 .Select-value-label {
     color: white !important;
 }
@@ -292,7 +292,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #select-single-attr2 .Select-value-label {
     color: white !important;
 }
@@ -308,7 +308,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #select-single-attr3 .Select-value-label {
     color: white !important;
 }
@@ -323,7 +323,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #select-single-attr4 .Select-value-label {
     color: white !important;
 }
@@ -339,7 +339,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #type-of-comparison .Select-value-label {
     color: white !important;
 }
@@ -355,7 +355,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #pcp-attribute-1 .Select-value-label {
     color: white !important;
 }
@@ -371,7 +371,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #pcp-attribute-2 .Select-value-label {
     color: white !important;
 }
@@ -387,7 +387,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #pcp-attribute-3 .Select-value-label {
     color: white !important;
 }
@@ -402,7 +402,7 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #pcp-attribute-4 .Select-value-label {
     color: white !important;
 }
@@ -418,7 +418,136 @@ body {
     color: white;
 }
 
-/* changes the text color of input box */
+
 #keepers-or-players .Select-value-label {
     color: white !important;
 }
+
+
+#select-countries-pitch .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-countries-pitch .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+
+#select-countries-pitch .Select-value-label {
+    color: white !important;
+}
+
+#select-attacker-pitch .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-attacker-pitch .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+
+#select-attacker-pitch .Select-value-label {
+    color: white !important;
+}
+
+
+#select-midfielder-pitch .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-midfielder-pitch .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+
+#select-midfielder-pitch .Select-value-label {
+    color: white !important;
+}
+
+
+#select-defender-pitch .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-defender-pitch .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+
+#select-defender-pitch .Select-value-label {
+    color: white !important;
+}
+
+
+#select-keeper-pitch .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-keeper-pitch .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+
+#select-keeper-pitch .Select-value-label {
+    color: white !important;
+}
+
+
+#select-player .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#select-player .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+
+#select-player .Select-value-label {
+    color: white !important;
+}
+
+
+
+#player-dropdown .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#player-dropdown .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+
+#player-dropdown .Select-value-label {
+    color: white !important;
+}
+
+
+#pick-attribute .Select-control {
+    background-color: #111111 !important;
+    color:white;
+  }
+  
+#pick-attribute .Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+
+#pick-attribute .Select-value-label {
+    color: white !important;
+}
+

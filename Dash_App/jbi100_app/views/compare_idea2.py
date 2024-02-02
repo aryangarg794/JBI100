@@ -1,20 +1,22 @@
 from ..config import ATTRIBUTES_PLAYERS, ATTRIBUTES_KEEPERS, PLAYER_LIST, PLAYER_LIST_KEEPERS, PLAYER_LIST_OUTFIELD
 
-from dash import dcc, html
+import copy
 import numpy as np
 import pandas as pd
-import plotly.graph_objects as go
-import plotly.express as px
-import copy
+
+
+from dash import dcc, html
 from dash import callback_context
 from dash.exceptions import PreventUpdate
 from dash import no_update
-import copy
-import matplotlib
-import random
+import plotly.graph_objects as go
+import plotly.express as px
+
+
 
 
 class CompareIdea2(html.Div):
+
     def __init__(self):
         self.df_player_combined = pd.read_csv('../Data/FIFA World Cup 2022 Player Data/stats_combined.csv', delimiter=',')
         self.name = "bar-comparison"
@@ -30,35 +32,39 @@ class CompareIdea2(html.Div):
                     style={'clickData' : 'event'},
                 ),
             ],
-            style={"background" : "#111111", "color" : "white"}
+            style={"background" : "#111111", "color" : "white", "padding-left" : "10px"}
         )
 
+    # normalize data such that it is between 0 and 1
     def normalize(self, max_att, min_att, value):
         return (value-min_att)/(max_att-min_att)
 
-    def update_compare_idea2_chart(self, players, selected_stat):
-        df_compare = copy.deepcopy(self.df_player_combined)
 
-        
+    # return the bar chart comparing an attribute for certain players
+    def update_compare_idea2_chart(self, players, selected_stat):
+
+        # create a copy of the stats_combined df object
+        df_compare = copy.deepcopy(self.df_player_combined)
 
         # Select data for the chosen stat
         df1 = df_compare[['player', selected_stat]]
 
+        # get the max values for the selected attribute
         max_att = df_compare[selected_stat].max()
         min_att = df_compare[selected_stat].min()
 
+        # create auxiliary arrays to store values and colors
         values = []
         colors = []
 
+        # for each player we store the value of the attribute of the respective player and also a color value whose luminance is based on the normalized 
+        # version of the value
         for player in players:
             df_player = df1.loc[df1["player"] == player]
             val_player = df_player.iloc[0][selected_stat]
             values.append(val_player)
             norm_value = self.normalize(max_att, min_att, val_player)
             colors.append(f'rgba(124,252,0,{norm_value})')
-
-        
-        
 
         self.fig = go.Figure()
         self.fig.add_trace(go.Bar(x=values, y=players, marker_color=colors, hoverinfo='none', orientation='h'))
@@ -79,7 +85,7 @@ def make_filter_boxes():
             html.Div(
                 id="chose-player",
                 children=[
-                    html.Label("Player 1:"),
+                    html.Label("Players:"),
                         dcc.Dropdown(
                             id="player-dropdown",
                             options=[{"label": i, "value": i} for i in PLAYER_LIST],

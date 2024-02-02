@@ -262,7 +262,7 @@ if __name__ == '__main__':
             div = html.Div(
             id="select-player-attrs",
             children=[
-                f"{player}, {position}, {value}",
+                html.H2(f"{player} ({position}) has value €{value}"),
                 dcc.Dropdown(
                     id="select-player-attrs-dropdown",
                     options=[{"label": i.replace("_", " ").capitalize(), "value": i} for i in ATTRIBUTES_PLAYERS],
@@ -271,10 +271,10 @@ if __name__ == '__main__':
                     searchable=True,
                     clearable=False,
                     placeholder="Select attributes to display",
-                    style={"margin-top" : "5px"}
+                    style={"margin-top" : "5px", "width" : "100%"}
                 ),
             ],
-            style={"display" : "flex", "flex-direction" : "column", "width" : "100%"}
+            style={"display" : "flex", "flex-direction" : "column", "width" : "100%", "padding" : "20px"}
             )
         return div
 

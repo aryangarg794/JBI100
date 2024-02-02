@@ -43,6 +43,7 @@ class TwitterSentiment(html.Div):
                     style={"display" : "flex", "flex-direction" : "row", "width" : "100%"}
                 )
             ],
+            style={"color" : "white", "padding" : "10px"}
         )
 
     def add_valuation_column(self, df):
@@ -89,8 +90,6 @@ class TwitterSentiment(html.Div):
         df['cumsum_pos'] = df['positives'].cumsum()
         df['cumsum_neu'] = df['neutral'].cumsum()
         df['cumsum_neg'] = df['negative'].cumsum()
-
-        print(df)
             
         return df
 
@@ -219,7 +218,7 @@ class TwitterSentiment(html.Div):
     def blank_fig(self):
 
         self.fig = go.Figure(go.Scatter(x=[], y = []))
-        self.fig.update_layout(template = None)
+        self.fig.update_layout(template = "plotly_dark")
         self.fig.update_xaxes(showgrid = False, showticklabels = False, zeroline=False)
         self.fig.update_yaxes(showgrid = False, showticklabels = False, zeroline=False)
 
