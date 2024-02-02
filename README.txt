@@ -5,7 +5,8 @@ PLEASE READ THE README.md ON THE MAIN PAGE OF THE REPO, OTHERWISE DOWNLOAD THE F
 - pandas
 - plotly-football-pitch
 
-AND RUN python app.py AFTER NAVIGATING TO THE Dash_App FOLDER.
+AND RUN python app.py AFTER NAVIGATING TO THE Dash_App FOLDER. 
+(NOTE THAT THERE MIGHT A DUPLICATE ID ERROR WHEN FIRST OPENING THE SIGHT, RELOADING THE WEBSITE WILL FIX THIS)
 
 blank_fig() code from https://stackoverflow.com/questions/66637861/how-to-not-show-default-dcc-graph-template-in-dash
 normalized_value function from https://stats.stackexchange.com/questions/70801/how-to-normalize-data-to-0-1-range
