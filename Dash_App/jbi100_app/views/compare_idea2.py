@@ -66,18 +66,22 @@ class CompareIdea2(html.Div):
             norm_value = self.normalize(max_att, min_att, val_player)
             colors.append(f'rgba(124,252,0,{norm_value})')
 
+        
         self.fig = go.Figure()
-        self.fig.add_trace(go.Bar(x=values, y=players, marker_color=colors, hoverinfo='none', orientation='h'))
+        # create a horizontal bar chart such that each bar has a color based on normalized value
+        self.fig.add_trace(go.Bar(x=values, y=players, marker_color=colors, hoverinfo='none', orientation='h')) 
+        # make sure the title of the bar chart contains the name of the player and stat chosen
         self.fig.update_layout(title=f'{selected_stat.replace("_", " ").capitalize()} Comparison for {", ".join(player for player in players)}', 
                                template="plotly_dark")
         
+        # update axis titles
         self.fig.update_xaxes(title_text=selected_stat.replace("_", " ").capitalize())
         self.fig.update_yaxes(title_text='Players')
 
         return go.FigureWidget(self.fig)
 
 
-
+# function to create the filter boxes for this view, we create a player selector and an attribute selector
 def make_filter_boxes():
     return html.Div(
         id="control-player-comparison",

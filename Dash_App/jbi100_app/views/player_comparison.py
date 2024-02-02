@@ -1,18 +1,17 @@
 from ..config import ATTRIBUTES_PLAYERS, ATTRIBUTES_KEEPERS, PLAYER_LIST, PLAYER_LIST_KEEPERS, PLAYER_LIST_OUTFIELD
 
-from dash import dcc, html
-import numpy as np
+import copy
 import pandas as pd
+
+from dash import dcc, html
 import plotly.graph_objects as go
 import plotly.express as px
-
-import copy
 
 
 class PlayerComparison(html.Div):
     
     def __init__(self):
-        self.name = "player-comparison"
+        self.name = "player-comparison" 
         self.df_player_combined       = pd.read_csv('../Data/FIFA World Cup 2022 Player Data/stats_combined.csv', delimiter=',')
         self.df_keepers_combined      = pd.read_csv('../Data/FIFA World Cup 2022 Player Data/stats_combined_keepers.csv', delimiter=',')
         self.df_player_valuations     = pd.read_csv('../Data/Player Valuation/simple_valuations.csv', delimiter=',')
@@ -20,7 +19,7 @@ class PlayerComparison(html.Div):
         super().__init__(
             id="player-comparison",
             children=[
-                self.make_choice_box(),
+                self.make_choice_box(), # choice filter dropdown between different types of views
                 html.Div(
                     id="graph-area",
                     children=[]
@@ -29,6 +28,7 @@ class PlayerComparison(html.Div):
 
         )
 
+    # similar to other functions, this returns the norm value, so that a value is between 0 to 5
     def get_normalized_value(self, df, attribute, player):
         attribute_max = df[attribute].max()
         attribute_min = df[attribute].min()
@@ -36,33 +36,36 @@ class PlayerComparison(html.Div):
         value = df[attribute].loc[df['player'] == player].values[0]
         
         return ((value - attribute_min)/(attribute_max-attribute_min))*5
-
+    
+    # update function for the first view (side-by-side)
     def update_side_by_side_view(self, player, attribute1, attribute2, attribute3, attribute4):
-
         
+        # choose df based on if the player chosen is a keeper or not (note: this means you cant compare keepers with outfield players)
         if player in PLAYER_LIST_OUTFIELD.values:
             df_copy = copy.deepcopy(self.df_player_combined)
         else:
             df_copy = copy.deepcopy(self.df_keepers_combined)
 
-
+        # get the norm value of the selected attribute for the player
         normalized_attr1 = self.get_normalized_value(df_copy, attribute1, player)
         normalized_attr2 = self.get_normalized_value(df_copy, attribute2, player)
         normalized_attr3 = self.get_normalized_value(df_copy, attribute3, player)
         normalized_attr4 = self.get_normalized_value(df_copy, attribute4, player)      
 
+        
         attributes = [attribute1.replace("_", " ").capitalize(), attribute2.replace("_", " ").capitalize(), 
                       attribute3.replace("_", " ").capitalize(), attribute4.replace("_", " ").capitalize()]
         radial = [normalized_attr1, normalized_attr2, normalized_attr3, normalized_attr4]
 
+        # create a polar chart such that it contains the norm values of each attribute and is filled
         fig = px.line_polar(r=radial, theta=attributes, line_close=True, range_r=[0, 5], line_shape='spline')
         fig.update_traces(fill='toself')
 
         fig.update_layout(template="plotly_dark")
 
-        
         return fig
     
+    # function to create the single graph view
     def update_single_graph_view(self, players, attribute1, attribute2, attribute3, attribute4):
 
         fig = go.Figure()
@@ -74,6 +77,7 @@ class PlayerComparison(html.Div):
         
         attributes_raw = [attribute1, attribute2, attribute3, attribute4] 
 
+        # for each player add the trace to the graph by following steps similar to the function above
         for player in players:
             normalized_attr1 = self.get_normalized_value(df_copy, attribute1, player)
             normalized_attr2 = self.get_normalized_value(df_copy, attribute2, player)
@@ -83,10 +87,13 @@ class PlayerComparison(html.Div):
             radial = [normalized_attr1, normalized_attr2, normalized_attr3, normalized_attr4]
 
             hover_text = []
+
+            # for each attribute we make a hover template so that it can used to get the absolute values of each attribute instead of the norm
             for attribute in attributes_raw:
                 hover_text.append(("<b>{play}</b><br><b>{attr}</b>: {value} <br>").format(play=player, attr=attribute.replace("_", " ").capitalize(), 
                                                                   value=df_copy[attribute].loc[df_copy['player']==player].values[0]))
-
+                
+            # add the trace
             fig.add_trace(go.Scatterpolar(
                 name=player,
                 r = radial,
@@ -97,6 +104,7 @@ class PlayerComparison(html.Div):
                 hoverinfo="text"
             ))
 
+        # show the legend but not the range since we used norm values anyway
         fig.update_layout(
             polar=dict(
                 radialaxis=dict(
@@ -112,6 +120,7 @@ class PlayerComparison(html.Div):
         return fig
     
 
+    # function to return the div for side-by-side view, we return a full section basically, with space for a graph and specific filters
     def side_by_side(self, player1, player2, player3):
         return html.Div(
             id="side-by-side",
@@ -282,6 +291,7 @@ class PlayerComparison(html.Div):
                    "color" : "white"}
         )
     
+    # similar to the function above, this function creates the section for the single graph view
     def single_view(self, players):
         return html.Div(
             id="single-view",
@@ -344,7 +354,8 @@ class PlayerComparison(html.Div):
             ],
             style={"display" : "flex", "flex-direction" : "column", "justify-content" : "center", "items-align" : "center"}
         )
-
+    
+    # the function to create the initial choice box
     def make_choice_box(self):
         return html.Div(
             id="choose-version",

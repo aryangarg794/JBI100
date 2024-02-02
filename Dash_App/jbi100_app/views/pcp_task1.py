@@ -1,18 +1,20 @@
 from ..config import ATTRIBUTES, ATTRIBUTES_KEEPERS, ATTRIBUTES_PLAYERS
 
-from dash import dcc, html
-import numpy as np
+
+import copy
 import pandas as pd
+
+from dash import dcc, html
 import plotly.graph_objects as go
 import plotly.express as px
 
-import copy
+
 
 class PCPTask1(html.Div):
 
     def __init__(self):
-        self.name = "pcp-plot"
-        self.name_scatter = "scatter-task1"
+        self.name = "pcp-plot" # name for the intitial pcp plot
+        self.name_scatter = "scatter-task1" # name for the auxiliary scatter plot
 
         self.df_player_combined       = pd.read_csv('../Data/FIFA World Cup 2022 Player Data/stats_combined.csv', delimiter=',')
         self.df_keepers_combined      = pd.read_csv('../Data/FIFA World Cup 2022 Player Data/stats_combined_keepers.csv', delimiter=',')
@@ -21,20 +23,20 @@ class PCPTask1(html.Div):
         super().__init__(
             className="pcp",
             children=[
-                self.keepers_or_players(),
+                self.keepers_or_players(), # query whether we are comparing player attributes or keeper attributes
                 html.Div(
-                    id="filter-pcp-plot",
-                    children=[
+                    id="filter-pcp-plot", # div which is used to hold the specific filters for the pcp based on previous filter
+                    children=[ 
                     ]
                 ),
                 html.Div(
                     id="pcp-graphs",
                     children=[
-                        dcc.Graph(
+                        dcc.Graph(  # pcp plot
                             id=self.name,
                             style={"width" : "100%"}
                         ),
-                        dcc.Graph(
+                        dcc.Graph(  # scatter plot
                             id=self.name_scatter,
                             style={"width" : "100%"}
                         )
@@ -48,13 +50,16 @@ class PCPTask1(html.Div):
 
         fig = go.Figure()
 
+        # we choose the relevant df based on which attributes we are looking at
         if attribute1 in ATTRIBUTES_KEEPERS:
             df_copy = copy.deepcopy(self.df_keepers_combined)
         else:
             df_copy = copy.deepcopy(self.df_player_combined)
-            df_copy = df_copy.drop(df_copy[df_copy['position'] == 'GK'].index)
+            # some keepers are included in the player file so we drop those in order to avoid a division by 0 for ols
+            df_copy = df_copy.drop(df_copy[df_copy['position'] == 'GK'].index)  
 
 
+        # renumber positions into categorical numbers such that the graph_object can use it as input
         df_copy['position'].replace(['FW', 'MF', 'DF', 'GK'], [0, 1, 2, 3], inplace=True)
         fig.add_trace(go.Parcoords(
             line=dict(color=df_copy['position']),
@@ -66,18 +71,22 @@ class PCPTask1(html.Div):
             ])
         ))
         
+        # change the theme to dark
         fig.update_layout(template="plotly_dark")
         
         return fig
     
+    # this function creates the scatter plot 
     def update_scatter(self, attribute1, attribute2):
 
+        # similar to before we select the relevant df based on attribute chosen
         if attribute1 in ATTRIBUTES_KEEPERS:
             df_copy = copy.deepcopy(self.df_keepers_combined)
         else:
             df_copy = copy.deepcopy(self.df_player_combined)
             df_copy = df_copy.drop(df_copy[df_copy['position'] == 'GK'].index)
 
+        # create a express object for a scatter plot with ols trendline and different positions different color
         fig = px.scatter(df_copy, x=attribute1, y=attribute2, trendline='ols', color="position")
 
         fig.update_layout(template="plotly_dark", 
@@ -87,7 +96,8 @@ class PCPTask1(html.Div):
         fig.update_yaxes(title_text=attribute2.replace("_", " ").capitalize())
 
         return fig
-
+    
+    # function to create filter boxes if the type of attribute chosen in player type
     def make_attribute_selection_outfield(self):
         return html.Div(
             id="attribute-selection-pcp",
@@ -152,6 +162,8 @@ class PCPTask1(html.Div):
             style={"display" : "flex", "flex-direction" : "row", "width" : "100%", "padding" : "10px", "gap" : "50px", "background" : "#111111", 
                    "color" : "white"}
         )
+    
+    # function to create filter boxes if the attribute type chosen is keeper
     def make_attribute_selection_keepers(self):
         return html.Div(
             id="attribute-selection-pcp",
@@ -217,6 +229,7 @@ class PCPTask1(html.Div):
                    "color" : "white"}
         )
     
+    # function to create initial filter box to choose the type of attribute that is being analysed
     def keepers_or_players(self):
         return html.Div(
             id="choose-version",
